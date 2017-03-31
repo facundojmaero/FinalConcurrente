@@ -1,8 +1,12 @@
 
 public class RedPetri {
 	
-	int disparar(){
-		return 0;
+	public RedPetri(){
+		
+	}
+	
+	boolean disparar(){
+		return true;
 	}
 	int[] get_sensibilizadas(){
 		return null;

@@ -9,5 +9,4 @@ public class GestorMonitor {
 	public void dispararTransicion(){
 		
 	}
-
 }
