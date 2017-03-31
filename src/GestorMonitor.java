@@ -7,14 +7,16 @@ public class GestorMonitor {
 	
 	final Semaphore entrada_monitor = new Semaphore(1);
 	private boolean k;
-	private RedPetri red = new RedPetri();
+	private RedPetri red;
 	private Semaphore colas[];
 	private List<Integer> sensibilizadas = new ArrayList<Integer>();
 	private List<Integer> quienesEnCola = new ArrayList<Integer>();
 	
 	public GestorMonitor(int cantidadTransiciones){
+		red = new RedPetri(cantidadTransiciones);
+		colas = new Semaphore[cantidadTransiciones];
 		for (int i=0;i<cantidadTransiciones;i++){
-			colas[i] = new Semaphore(1);
+			this.colas[i] = new Semaphore(1);
 		}
 	}
 	

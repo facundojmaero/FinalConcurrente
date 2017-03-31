@@ -4,15 +4,17 @@ public class RedPetri {
 	int M0[] = {1,0,0};
 	int I[][] = {{-1,1},{1,-1},{0,1}};
 	int S[];
-	final int NUMTRAN = 2;
+	int transiciones;
+
 	
-	public RedPetri(){
-		
+	public RedPetri(int transiciones){
+		this.transiciones = transiciones;
+		S = new int[transiciones];
 	}
 	
 	public boolean disparar(int transicion){
 		// Pongo 0 en todas las transiciones que no quiero disparar y 1 en la que si voy a disparar
-		for (int i=0;i<NUMTRAN;i++){
+		for (int i=0;i<transiciones;i++){
 			S[i] = 0;
 		}
 		S[transicion] = 1;
