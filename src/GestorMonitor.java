@@ -7,9 +7,16 @@ public class GestorMonitor {
 	final Semaphore entrada_monitor = new Semaphore(1);
 	private boolean k;
 	private RedPetri red = new RedPetri();
+	private Semaphore colas[];
 	private int sensibilizadas[];
 	
-	public void dispararTransicion(){
+	public GestorMonitor(int cantidadTransiciones){
+		for (int i=0;i<cantidadTransiciones;i++){
+			colas[i] = new Semaphore(1);
+		}
+	}
+	
+	public void dispararTransicion(int transicion){
 		try {
 			entrada_monitor.acquire();
 		} catch (InterruptedException e) {
