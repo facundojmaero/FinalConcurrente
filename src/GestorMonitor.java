@@ -1,4 +1,5 @@
 import java.util.concurrent.Semaphore;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -8,7 +9,7 @@ public class GestorMonitor {
 	private boolean k;
 	private RedPetri red = new RedPetri();
 	private Semaphore colas[];
-	private int sensibilizadas[];
+	private List<Integer> sensibilizadas = new ArrayList<Integer>();
 	
 	public GestorMonitor(int cantidadTransiciones){
 		for (int i=0;i<cantidadTransiciones;i++){
@@ -52,6 +53,12 @@ public class GestorMonitor {
 			else{
 				entrada_monitor.release();
 				//Me voy a una de las colas a dormir
+				try {
+					colas[transicion].acquire();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			return;
 		}

@@ -1,15 +1,17 @@
+import java.util.ArrayList;
+import java.util.List;
 
 public class Hilo implements Runnable {
 	
 	GestorMonitor gestor;
 	int transicionActual;
-	int[] transiciones;
+	List<Integer> transiciones = new ArrayList<Integer>();
 	
-	public Hilo(int[] transiciones, GestorMonitor gestor){
+	public Hilo(List<Integer> transiciones, GestorMonitor gestor){
 		this.gestor = gestor;
 		this.transiciones = transiciones;
-		for (int i = 0; i < transiciones.length; i++) {
-			if (transiciones[i] != -1){
+		for (int i = 0; i < transiciones.size(); i++) {
+			if (transiciones.get(i) != -1){
 				transicionActual = i;
 				break;
 			}
@@ -28,7 +30,7 @@ public class Hilo implements Runnable {
 	}
 	
 	public void siguienteTransicion(){
-		transicionActual = transiciones[transicionActual];
+		transicionActual = transiciones.get(transicionActual);
 	}
 
 }

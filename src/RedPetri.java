@@ -1,3 +1,4 @@
+import java.util.List;
 
 public class RedPetri {
 	
@@ -8,7 +9,7 @@ public class RedPetri {
 	public boolean disparar(){
 		return true;
 	}
-	public int[] get_sensibilizadas(){
+	public List<Integer> get_sensibilizadas(){
 		return null;
 	}
 }
