@@ -32,6 +32,7 @@ public class GestorMonitor {
 		k = true;
 		while(k == true){
 			k = red.disparar(transicion);
+			System.out.println("Disparanddo transicion" + transicion);
 			
 			if (k==true){
 				sensibilizadas = red.get_sensibilizadas();

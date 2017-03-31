@@ -2,7 +2,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.sun.media.jai.opimage.FormatCRIF;
 
 public class Main {
 

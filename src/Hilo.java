@@ -21,8 +21,10 @@ public class Hilo implements Runnable {
 
 	@Override
 	public void run() {
-		gestor.dispararTransicion(transicionActual);
-		siguienteTransicion();
+		while(true){
+			gestor.dispararTransicion(transicionActual);
+			siguienteTransicion();
+		}
 	}
 	
 	public int getTransicionActual(){
