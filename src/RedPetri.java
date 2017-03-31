@@ -5,10 +5,10 @@ public class RedPetri {
 		
 	}
 	
-	boolean disparar(){
+	public boolean disparar(){
 		return true;
 	}
-	int[] get_sensibilizadas(){
+	public int[] get_sensibilizadas(){
 		return null;
 	}
 }
