@@ -18,15 +18,7 @@ public class GestorMonitor {
 		}
 	}
 	
-	private List<Integer> andVectores (List<Integer> sensibilizadas, List<Integer> enCola){
-		List<Integer> listas = new ArrayList<Integer>(sensibilizadas.size());
-		
-		for (int i = 0; i < sensibilizadas.size(); i++) {
-			listas.add(sensibilizadas.get(i) & enCola.get(i));
-		}
-		
-		return listas;
-	}
+
 	
 	public void dispararTransicion(int transicion){
 		try {
@@ -37,20 +29,18 @@ public class GestorMonitor {
 		}
 		k = true;
 		while(k == true){
-			k = red.disparar();
+			k = red.disparar(transicion);
 			
 			if (k==true){
 				sensibilizadas = red.get_sensibilizadas();
 				//Actualizo quienes estan en la cola
 				this.quienesEnCola(); 
-				List<Integer> listasParaDisparar = null; //Aca hay que hacer el and de sensibilizidas y listas para disparar
+				List<Integer> listasParaDisparar = this.andVectores(sensibilizadas, quienesEnCola); //Aca hay que hacer el and de sensibilizidas y listas para disparar
 				if (listasParaDisparar.contains(1)){
 					//A falta de politica despierto a los hilos de la primera transicion disponible
 					int indiceDespertar = listasParaDisparar.indexOf(1);
 					//Despierto a un hilo que esta esperando por esa transicion
 					colas[indiceDespertar].release();
-					//Salgo del monitor
-					entrada_monitor.release();
 					return;
 				}
 				else{
@@ -69,15 +59,10 @@ public class GestorMonitor {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				try {
-					colas[transicion].acquire();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 			}
-			return;
 		}
+		entrada_monitor.release();
+		return;
 	}
 	
 	private void quienesEnCola(){
@@ -87,5 +72,15 @@ public class GestorMonitor {
 			quienesEnCola.set(i, hayHilos);
 		}
 		return;
+	}
+	
+	private List<Integer> andVectores (List<Integer> sensibilizadas, List<Integer> enCola){
+		List<Integer> listas = new ArrayList<Integer>(sensibilizadas.size());
+		
+		for (int i = 0; i < sensibilizadas.size(); i++) {
+			listas.add(sensibilizadas.get(i) & enCola.get(i));
+		}
+		
+		return listas;
 	}
 }
