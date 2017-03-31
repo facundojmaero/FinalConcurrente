@@ -18,6 +18,16 @@ public class GestorMonitor {
 		}
 	}
 	
+	private List<Integer> andVectores (List<Integer> sensibilizadas, List<Integer> enCola){
+		List<Integer> listas = new ArrayList<Integer>(sensibilizadas.size());
+		
+		for (int i = 0; i < sensibilizadas.size(); i++) {
+			listas.add(sensibilizadas.get(i) & enCola.get(i));
+		}
+		
+		return listas;
+	}
+	
 	public void dispararTransicion(int transicion){
 		try {
 			entrada_monitor.acquire();
