@@ -18,6 +18,10 @@ public class GestorMonitor {
 		for (int i=0;i<cantidadTransiciones;i++){
 			this.colas[i] = new Semaphore(1);
 		}
+		for (int i = 0; i < cantidadTransiciones; i++) {
+			this.quienesEnCola.add(0);
+			this.sensibilizadas.add(0);
+		}
 	}
 	
 

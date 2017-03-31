@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RedPetri {
@@ -18,7 +20,8 @@ public class RedPetri {
 			S[i] = 0;
 		}
 		S[transicion] = 1;
-		int MTemp[] = this.multiplicar(I, S);
+		//int MTemp[] =  this.sumar(M0, this.multiplicar(I, S));
+		int MTemp[] = this.sumar(M0, this.multiplicar(I, S));
 		boolean disparar = true;
 		for (int i = 0; i < MTemp.length; i++) {
 			if (MTemp[i]<0){
@@ -32,22 +35,41 @@ public class RedPetri {
 		return disparar;
 	}
 	public List<Integer> get_sensibilizadas(){
-		return null;
+		List<Integer> sensibilizadas = new ArrayList<Integer>();
+		for (int index = 0; index < M0.length; index++)
+		{
+		    sensibilizadas.add(M0[index]);
+		}
+		return sensibilizadas;
 	}
 	
 	private int[] multiplicar (int[][] firstarray,int[] secondarray){
 		/* Create another 2d array to store the result using the original arrays' lengths on row and column respectively. */
 		int [] result = new int[firstarray.length];
-
-		/* Loop through each and get product, then sum up and store the value */
-		for (int i = 0; i < firstarray.length; i++) { 
-		    for (int j = 0; j < secondarray.length; j++) { 
-		        for (int k = 0; k < firstarray[0].length; k++) { 
-		            result[i] += firstarray[i][k] * secondarray[k];
-		        }
-		    }
+		
+		for (int i = 0; i < result.length; i++) {
+			for (int j = 0; j < firstarray[0].length; j++) {
+				result[i] += firstarray[i][j] * secondarray[j];
+			}
 		}
+//
+//		/* Loop through each and get product, then sum up and store the value */
+//		for (int i = 0; i < firstarray.length; i++) { 
+//		    for (int j = 0; j < secondarray.length; j++) { 
+//		        for (int k = 0; k < firstarray[0].length; k++) { 
+//		            result[i] += firstarray[i][k] * secondarray[k];
+//		        }
+//		    }
+//		}
 		return result;
+	}
+	
+	private int[] sumar (int[] firstarray, int[] secondarray){
+		int [] resultado = new int[secondarray.length];
+		for (int i = 0; i < secondarray.length; i++) {
+			resultado[i] = firstarray[i] + secondarray[i];
+		}
+		return resultado;
 	}
 
 
