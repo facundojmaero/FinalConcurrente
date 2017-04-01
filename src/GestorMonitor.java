@@ -36,9 +36,12 @@ public class GestorMonitor {
 		k = true;
 		while(k == true){
 			k = red.disparar(transicion);
-			System.out.println("Disparanddo transicion" + transicion);
+			System.out.println("Intentando disparar transicion " + transicion);
 			
 			if (k==true){
+				
+				System.out.println("Dispare transicion " + transicion);
+				
 				sensibilizadas = red.get_sensibilizadas();
 				//Actualizo quienes estan en la cola
 				this.quienesEnCola(); 
@@ -53,7 +56,6 @@ public class GestorMonitor {
 				else{
 					k = false;
 					//Me salgo del while
-					return;
 				}
 				
 			}
@@ -89,5 +91,10 @@ public class GestorMonitor {
 		}
 		
 		return listas;
+	}
+	
+	public void verMarcado(){
+		System.out.print(Arrays.toString(red.getMarcado()));
+		return;
 	}
 }

@@ -21,10 +21,12 @@ public class Hilo implements Runnable {
 
 	@Override
 	public void run() {
-		while(true){
+		for (int i = 0; i < 20; i++) {
 			gestor.dispararTransicion(transicionActual);
 			siguienteTransicion();
 		}
+		System.out.println("Terminando de correr hilo");
+		gestor.verMarcado();
 	}
 	
 	public int getTransicionActual(){
