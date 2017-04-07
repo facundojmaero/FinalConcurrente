@@ -5,8 +5,8 @@ import java.util.List;
 import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 public class RedPetri {
-	int M0[] = {1,0,0};					//marcado inicial
-	int I[][] = {{-1,1},{1,-1},{0,1}};	//red
+	int M0[] = {1,0,1,0,1,0};					//marcado inicial
+	int I[][] = {{-1,1,0,0},{1,-1,0,0},{-1,0,1,0},{0,1,0,-1},{0,0,1,-1},{0,0,-1,1}};	//red
 	int S[];	//semaforos
 	int transiciones;
 
@@ -38,8 +38,11 @@ public class RedPetri {
 	}
 	public List<Integer> get_sensibilizadas(){
 		List<Integer> sensibilizadas = new ArrayList<Integer>(transiciones);
-		sensibilizadas.add(0, 0);
-		sensibilizadas.add(1, 0);
+//		sensibilizadas.add(0, 0);
+//		sensibilizadas.add(1, 0);
+		for (int i = 0; i < transiciones; i++) {
+			sensibilizadas.add(0);
+		}
 		int[] tr = new int[transiciones], resultado;
 		for (int index = 0; index < transiciones; index++)
 		{
@@ -53,7 +56,7 @@ public class RedPetri {
 			sensibilizadas.set(index, 1);
 			//multiplico la matriz por el vector que trata de disparar una transicion dada
 			//si resultado tiene un elemento menor a 0 la transicion no puede dispararse
-			resultado = multiplicar(I, tr);
+			resultado = sumar(M0,multiplicar(I, tr));
 			for (int j = 0; j < resultado.length; j++) {
 				if(resultado[j]<0){
 					sensibilizadas.set(index, 0);

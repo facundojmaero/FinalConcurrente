@@ -16,7 +16,7 @@ public class GestorMonitor {
 		red = new RedPetri(cantidadTransiciones);
 		colas = new Semaphore[cantidadTransiciones];
 		for (int i=0;i<cantidadTransiciones;i++){
-			this.colas[i] = new Semaphore(1);
+			this.colas[i] = new Semaphore(0);
 		}
 		for (int i = 0; i < cantidadTransiciones; i++) {
 			this.quienesEnCola.add(0);
@@ -41,7 +41,7 @@ public class GestorMonitor {
 			if (k==true){
 				
 				System.out.println("Dispare transicion " + transicion);
-				
+//				verMarcado();
 				sensibilizadas = red.get_sensibilizadas();
 				//Actualizo quienes estan en la cola
 				this.quienesEnCola(); 
@@ -77,8 +77,13 @@ public class GestorMonitor {
 	private void quienesEnCola(){
 		for (int i=0;i<colas.length;i++){
 			//Lleno quienesEnCola con "1" donde hay hilos esperando y "0" donde no los hay
-			int hayHilos = colas[i].availablePermits() ^ 1;
-			quienesEnCola.set(i, hayHilos);
+			int cantidad_hilos_cola = colas[i].getQueueLength();
+			if (cantidad_hilos_cola > 0){
+				quienesEnCola.set(i, 1);
+			}
+			else{
+				quienesEnCola.set(i, 0);
+			}
 		}
 		return;
 	}
