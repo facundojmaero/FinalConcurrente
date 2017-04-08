@@ -9,14 +9,7 @@ public class Hilo implements Runnable {
 	public Hilo(List<Integer> transiciones, GestorMonitor gestor){
 		this.gestor = gestor;
 		this.transiciones = transiciones;
-		transicionActual = ((MyLinkedList<Integer>) transiciones).getActual();
-//		for (int i = 0; i < transiciones.size(); i++) {
-//			if (transiciones.get(i) != -1){
-//				transicionActual = i;
-//				break;
-//			}
-//		} 
-		 
+		transicionActual = ((MyLinkedList<Integer>) transiciones).getActual();	 
 	}
 
 	@Override
@@ -27,7 +20,6 @@ public class Hilo implements Runnable {
 			try {
 				Thread.sleep((long)(Math.random() * 1000));
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

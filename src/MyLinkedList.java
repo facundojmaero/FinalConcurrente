@@ -1,6 +1,6 @@
 import java.util.LinkedList;
 
-public class MyLinkedList <E> extends LinkedList{
+public class MyLinkedList <E> extends LinkedList<E>{
 	int indiceActual;
 	
 	public MyLinkedList(){
