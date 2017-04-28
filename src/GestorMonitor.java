@@ -37,6 +37,15 @@ public class GestorMonitor {
 		while(k == true){
 			k = red.disparar(transicion);
 			System.out.println("Intentando disparar transicion " + transicion);
+			//Si no se cumple los invariantes
+			try {
+				red.revisarInvariantes();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				System.out.println("No se cumplen los invariantes. Finalizando programa");
+				e.printStackTrace();
+				System.exit(1);
+			}
 			
 			if (k==true){
 				

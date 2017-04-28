@@ -2,9 +2,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RedPetri {
+	private static final Exception IllegalStateException = null;
 	//Productor consumidor
-	int M0[] = {1,0,1,0,1,0};					//marcado inicial
-	int I[][] = {{-1,1,0,0},{1,-1,0,0},{-1,0,1,0},{0,1,0,-1},{0,0,1,-1},{0,0,-1,1}};	//red
+	int M0[] = {1,0,1,1,0,0};					//marcado inicial
+	int I[][] = {{-1,1,0,0},{1,-1,0,0},{-1,0,1,0},{0,0,1,-1},{0,0,-1,1},{0,1,0,-1}};	//red
 	int S[];	//semaforos
 	int transiciones;
 	
@@ -142,6 +143,26 @@ public class RedPetri {
 
 	public int[] getMarcado(){
 		return M0;
+	}
+	
+	public boolean revisarInvariantes() throws Exception{
+		boolean invariante = true;
+		if (!(M0[0] + M0[1] == 2)){
+			invariante = false;
+		}
+		if (!(M0[1] + M0[2] + M0[4] + M0[5] == 1)){
+			invariante = false;
+		}
+		if(!(M0[3] + M0[4] == 1)){
+			invariante = false;
+		}
+		
+		if (!invariante){
+			throw IllegalStateException;
+		}
+		
+		return invariante;
+	
 	}
 }
 
