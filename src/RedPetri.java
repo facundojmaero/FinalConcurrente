@@ -67,6 +67,7 @@ public class RedPetri {
 		
 		return disparar;
 	}
+	//Devuelve un ArrayList con 1 donde la transicion esta sensibilizada
 	public List<Integer> get_sensibilizadas(){
 		List<Integer> sensibilizadas = new ArrayList<Integer>(transiciones);
 //		sensibilizadas.add(0, 0);
@@ -163,6 +164,17 @@ public class RedPetri {
 		
 		return invariante;
 	
+	}
+	
+	//Devuelve un vector con las transiciones nuevas que se sensibilizaron
+	private List<Integer> calcularNewSensibilizadas(List<Integer> oldSensibilizadas,List<Integer> actualSensibilizadas){
+		List<Integer> newSensibilizadas = new ArrayList<Integer>();
+		for(int i=0;i<oldSensibilizadas.size();i++){
+			int sensibilizada = 0;
+			sensibilizada = actualSensibilizadas.get(i) - oldSensibilizadas.get(i);
+			newSensibilizadas.add(sensibilizada);
+		}
+		return newSensibilizadas;
 	}
 }
 

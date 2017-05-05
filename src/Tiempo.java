@@ -1,8 +1,10 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class Tiempo {
 	
-	ArrayList<Long> transicionesConTiempo = new ArrayList<Long>();
+	List<Long> transicionesConTiempo = new ArrayList<Long>();
+	int esperando[];
 	long alfa[];
 	long beta[];
 	
@@ -21,19 +23,34 @@ public class Tiempo {
 		}
 	}
 	
-	public int getTimeSleep(){
-		return 0;
+	public long getTimeSleep(int transicion){
+		long sleep_time = transicionesConTiempo.get(transicion) + alfa[transicion];
+		sleep_time -= System.currentTimeMillis();
+		return sleep_time;
 	}
 	
-	public boolean alguienEsperando(){
-		return false;
-	}
-	
-	public void resetEsperando(){
+	public boolean alguienEsperando(int transicion){
+		//Si hay alguien esperando
+		if (esperando[transicion] != 0){
+			return true;
+		}
+		else{
+			return false;
+		}
 		
 	}
 	
-	public void setNuevoTimeStamp(){
-		
+	public void resetEsperando(int transicion){
+		esperando[transicion] = 0;
+		return;
+	}
+	
+	public void setNuevoTimeStamp(List<Integer> newSensibilizadas){
+		for(int i=0;i<newSensibilizadas.size();i++){
+			//Si es una nueva transicion sensibilizada
+			if (newSensibilizadas.get(i) == 1){
+				transicionesConTiempo.set(i,System.currentTimeMillis());
+			}
+		}
 	}
 }
