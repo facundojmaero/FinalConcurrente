@@ -10,7 +10,6 @@ public class Main {
 	public static void main(String[] args) {
 		
 		final int NUMTRAN = 4;
-//		final int NUMPLAZAS = 6;
 		String fileMatrizI = "red.txt";
 		int[][] I = readMatrix(fileMatrizI);
 		
@@ -39,7 +38,6 @@ public class Main {
 		try {
 			input = new Scanner(new File(file));
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		while(input.hasNextLine())
@@ -63,7 +61,6 @@ public class Main {
 		return  I;
 	}
 	
-
 	public static int[] convertIntegers(List<Integer> integers)
 	{
 	    int[] ret = new int[integers.size()];

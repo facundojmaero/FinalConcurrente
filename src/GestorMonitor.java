@@ -6,7 +6,7 @@ import java.util.List;
 public class GestorMonitor {
 	
 	final Semaphore entrada_monitor = new Semaphore(1);
-	private boolean k;
+	private int k;
 	private RedPetri red;
 	private Semaphore colas[];
 	private List<Integer> sensibilizadas = new ArrayList<Integer>();
@@ -14,7 +14,7 @@ public class GestorMonitor {
 	
 	public GestorMonitor(int cantidadTransiciones, int I[][]){
 		
-		red = new RedPetri(cantidadTransiciones, I);
+		red = new RedPetri(cantidadTransiciones, I, entrada_monitor);
 		colas = new Semaphore[cantidadTransiciones];
 		for (int i=0;i<cantidadTransiciones;i++){
 			this.colas[i] = new Semaphore(0);
@@ -27,30 +27,29 @@ public class GestorMonitor {
 	
 
 	
-	public void dispararTransicion(int transicion){
+	public int dispararTransicion(int transicion){
 		try {
 			entrada_monitor.acquire();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		k = true;
-		while(k == true){
+		k = 1;
+		while(k == 1){
 			k = red.disparar(transicion);
-			System.out.println("Intentando disparar transicion " + transicion);
+			System.out.println(Thread.currentThread().getName() + " Intentando disparar transicion " + transicion);
 			//Si no se cumple los invariantes
 			try {
 				red.revisarInvariantes();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				System.out.println("No se cumplen los invariantes. Finalizando programa");
 				e.printStackTrace();
 				System.exit(1);
 			}
 			
-			if (k==true){
-				
-				System.out.println("Dispare transicion " + transicion);
+			if (k == 1){
+				//Dispare una transicion correctamente
+				System.out.println(Thread.currentThread().getName() + " Dispare transicion " + transicion);
 //				verMarcado();
 				sensibilizadas = red.get_sensibilizadas();
 				//Actualizo quienes estan en la cola
@@ -61,16 +60,19 @@ public class GestorMonitor {
 					int indiceDespertar = listasParaDisparar.indexOf(1);
 					//Despierto a un hilo que esta esperando por esa transicion
 					colas[indiceDespertar].release();
-					return;
+					return 0;
 				}
 				else{
-					k = false;
+					k = 0;
 					//Me salgo del while
+					entrada_monitor.release();
+					return 0;
 				}
-				
 			}
 			
-			else{
+			else if(k == 0){
+				System.out.println(Thread.currentThread().getName() + " transicion no sensibilizada" );
+				//No dispare por no estar sensibilizada
 				entrada_monitor.release();
 				try {
 					colas[transicion].acquire();
@@ -79,9 +81,15 @@ public class GestorMonitor {
 					e1.printStackTrace();
 				}
 			}
+			else {//if(k == -1){
+				System.out.println(Thread.currentThread().getName() + " duermo, estoy antes del alfa" );
+				//No dispare por no estar en ventana de tiempo
+				//Igual que el caso anterior pero no espero en la cola sino que me voy
+				return 1;
+			}
 		}
 		entrada_monitor.release();
-		return;
+		return 0;
 	}
 	
 	private void quienesEnCola(){

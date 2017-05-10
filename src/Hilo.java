@@ -15,12 +15,9 @@ public class Hilo implements Runnable {
 	@Override
 	public void run() {
 		for (int i = 0; i < 20; i++) {
-			gestor.dispararTransicion(transicionActual);
-			siguienteTransicion();
-			try {
-				Thread.sleep((long)(Math.random() * 1000));
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			if(gestor.dispararTransicion(transicionActual) == 0){
+				//la transicion se disparo, avanzo a la siguiente
+				siguienteTransicion();
 			}
 		}
 		System.out.println("Terminando de correr hilo");

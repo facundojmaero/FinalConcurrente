@@ -1,70 +1,73 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 public class RedPetri {
 	private static final Exception IllegalStateException = null;
-	//Productor consumidor
-	int M0[] = {1,0,1,1,0,0}; //marcado inicial
+	
+	int M0[] = {1,0,1,1,0,0}; //marcado inicial productor consumidor
 	int I[][]; //red de petri
-	int S[];	//semaforos
+	int S[];	//vector de disparo
 	int transiciones;
 	Tiempo tiempo;
+	Semaphore entradaMonitor;
 	
 //	int M0[] = {0,0,0,0,50,1,1,1,1,0,0,0,1,0,0,0,0,50,1,1,1,1,0,0,0,0,0,50,1};
 
 	
-	public RedPetri(int transiciones, int I[][]){
+	public RedPetri(int transiciones, int I[][], Semaphore entradaMonitor){
 		this.transiciones = transiciones;
 		S = new int[transiciones];
 		this.I = I;
 		this.tiempo = new Tiempo(this.get_sensibilizadas());
+		this.entradaMonitor = entradaMonitor;
 	}
 	
-	public boolean disparar(int transicion){
+	public int disparar(int transicion){
 		// Pongo 0 en todas las transiciones que no quiero disparar y 1 en la que si voy a disparar
 		for (int i=0;i<transiciones;i++){
 			S[i] = 0;
 		}
 		S[transicion] = 1;
-		//int MTemp[] =  this.sumar(M0, this.multiplicar(I, S));
-		
+	
 		int result = tiempo.testVentanaTiempo(transicion);
 		
 		if(result == -1){
-			//estoy antes del alfa, tengo que dormir
+			//estoy antes del alfa, tengo que dormir y salir del monitor
 			tiempo.setEsperando(transicion);
-			//salgo del monitor
-			//semaforo.release();
+			entradaMonitor.release();
 			try {
-				System.out.println("Antes del alfa, durmiendo " + tiempo.getTimeSleep(transicion) + " ms");
+				System.out.println(Thread.currentThread().getName() + " Antes del alfa, durmiendo " + tiempo.getTimeSleep(transicion) + " ms");
 				Thread.sleep(tiempo.getTimeSleep(transicion));
 			} catch (InterruptedException e) {
 				System.out.print("Error hilo esperando alfa");
 				e.printStackTrace();
 			}
+			return -1;
 		}
-		else if (result == 1){
-			//estoy despues del beta
-		}
+//		else if (result == 1){
+//			//estoy despues del beta
+//		}
 		else if (result == 0){
 			//estoy en la ventana correcta, sigo la ejecucion
-		}
-		
-		List<Integer> oldSensibilizadas = get_sensibilizadas();
-		int MTemp[] = sumar(M0, multiplicar(I, S));
-		boolean disparar = true;
-		for (int i = 0; i < MTemp.length; i++) {
-			if (MTemp[i]<0){
-				disparar = false;
+			
+			List<Integer> oldSensibilizadas = get_sensibilizadas();
+			int MTemp[] = sumar(M0, multiplicar(I, S));
+			int disparar = 1;
+			for (int i = 0; i < MTemp.length; i++) {
+				if (MTemp[i]<0){
+					disparar = 0;
+				}
 			}
+			if(disparar == 1){
+				M0 = MTemp;
+				List<Integer> actualSensibilizadas = get_sensibilizadas();
+				tiempo.setNuevoTimeStamp(calcularNewSensibilizadas(oldSensibilizadas, actualSensibilizadas));
+			}
+			
+			return disparar;
 		}
-		if(disparar){
-			M0 = MTemp;
-			List<Integer> actualSensibilizadas = get_sensibilizadas();
-			tiempo.setNuevoTimeStamp(calcularNewSensibilizadas(oldSensibilizadas, actualSensibilizadas));
-		}
-		
-		return disparar;
+		return -1;
 	}
 	//Devuelve un ArrayList con 1 donde la transicion esta sensibilizada
 	public List<Integer> get_sensibilizadas(){

@@ -20,13 +20,13 @@ public class Tiempo {
 	public int testVentanaTiempo(int transicion){
 		long current_time = System.currentTimeMillis();
 		long tiempo = current_time - transicionesConTiempo.get(transicion);
-		System.out.println(tiempo);
+		System.out.println(Thread.currentThread().getName() + " " +tiempo);
 		if(tiempo < alfa[transicion]){
 			return -1;
 		}
-		else if(tiempo > beta[transicion]){
-			return 1;
-		}
+//		else if(tiempo > beta[transicion]){
+//			return 1;
+//		}
 		else return 0;
 	}
 	
@@ -48,7 +48,6 @@ public class Tiempo {
 		else{
 			return false;
 		}
-		
 	}
 	
 	public void resetEsperando(int transicion){
