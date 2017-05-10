@@ -4,47 +4,20 @@ import java.util.List;
 public class RedPetri {
 	private static final Exception IllegalStateException = null;
 	//Productor consumidor
-	int M0[] = {1,0,1,1,0,0};					//marcado inicial
-	int I[][] = {{-1,1,0,0},{1,-1,0,0},{-1,0,1,0},{0,0,1,-1},{0,0,-1,1},{0,1,0,-1}};	//red
+	int M0[] = {1,0,1,1,0,0}; //marcado inicial
+	int I[][]; //red de petri
 	int S[];	//semaforos
 	int transiciones;
+	Tiempo tiempo;
 	
-	//red trabajo practico
-//	int I[][] = {{1,0,0,0,0,-1,0,0,0,-1,0,0,0,0,0,0,0,0,0,0},
-//				{0,1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-//				{0,0,1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-//				{0,0,0,1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-//				{0,-1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-//				{0,-1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-//				{0,0,0,0,0,-1,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
-//				{0,0,-1,1,0,0,-1,1,0,0,0,0,0,0,0,0,0,0,0,0},
-//				{0,0,-1,1,0,0,0,-1,1,0,0,0,0,0,0,0,0,0,0,0},
-//				{0,0,0,0,0,1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0},
-//				{0,0,0,0,0,0,1,-1,0,0,0,0,0,0,0,0,0,0,0,0},
-//				{0,0,0,0,0,0,0,1,-1,0,0,0,0,0,0,0,0,0,0,0},
-//				{0,-1,1,-1,1,0,-1,1,0,0,-1,1,0,0,0,0,1,-1,0,0},
-//				{0,0,0,0,0,0,0,0,1,0,0,0,1,-1,0,0,0,0,0,0},
-//				{0,0,0,0,0,0,0,0,0,1,-1,0,0,0,0,0,0,0,0,0},
-//				{0,0,0,0,0,0,0,0,0,0,1,-1,0,0,0,0,0,0,0,0},
-//				{0,0,0,0,0,0,0,0,0,0,0,1,-1,0,0,0,0,0,0,0},
-//				{-1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0},
-//				{-1,0,0,0,0,1,0,0,0,1,0,0,0,0,1,-1,0,0,0,0},
-//				{0,0,0,0,0,0,0,0,0,-1,1,0,0,0,0,1,-1,0,0,0},
-//				{0,0,0,0,0,0,0,0,0,0,0,-1,1,0,0,0,0,1,-1,0},
-//				{0,0,0,0,0,0,0,0,-1,0,0,0,-1,1,0,0,0,0,1,-1},
-//				{0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,1,0,0,0,0},
-//				{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,1,0,0,0},
-//				{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,1,0,0},
-//				{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,1,0},
-//				{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,1},
-//				{0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,-1}
-//				{0,0,0,0,0,0,0,0,0,-1,0,0,1,0,1,0,0,0,0,-1}};
 //	int M0[] = {0,0,0,0,50,1,1,1,1,0,0,0,1,0,0,0,0,50,1,1,1,1,0,0,0,0,0,50,1};
 
 	
-	public RedPetri(int transiciones){
+	public RedPetri(int transiciones, int I[][]){
 		this.transiciones = transiciones;
 		S = new int[transiciones];
+		this.I = I;
+		this.tiempo = new Tiempo(this.get_sensibilizadas());
 	}
 	
 	public boolean disparar(int transicion){
@@ -54,6 +27,30 @@ public class RedPetri {
 		}
 		S[transicion] = 1;
 		//int MTemp[] =  this.sumar(M0, this.multiplicar(I, S));
+		
+		int result = tiempo.testVentanaTiempo(transicion);
+		
+		if(result == -1){
+			//estoy antes del alfa, tengo que dormir
+			tiempo.setEsperando(transicion);
+			//salgo del monitor
+			//semaforo.release();
+			try {
+				System.out.println("Antes del alfa, durmiendo " + tiempo.getTimeSleep(transicion) + " ms");
+				Thread.sleep(tiempo.getTimeSleep(transicion));
+			} catch (InterruptedException e) {
+				System.out.print("Error hilo esperando alfa");
+				e.printStackTrace();
+			}
+		}
+		else if (result == 1){
+			//estoy despues del beta
+		}
+		else if (result == 0){
+			//estoy en la ventana correcta, sigo la ejecucion
+		}
+		
+		List<Integer> oldSensibilizadas = get_sensibilizadas();
 		int MTemp[] = sumar(M0, multiplicar(I, S));
 		boolean disparar = true;
 		for (int i = 0; i < MTemp.length; i++) {
@@ -63,6 +60,8 @@ public class RedPetri {
 		}
 		if(disparar){
 			M0 = MTemp;
+			List<Integer> actualSensibilizadas = get_sensibilizadas();
+			tiempo.setNuevoTimeStamp(calcularNewSensibilizadas(oldSensibilizadas, actualSensibilizadas));
 		}
 		
 		return disparar;
@@ -122,15 +121,6 @@ public class RedPetri {
 				result[i] += firstarray[i][j] * secondarray[j];
 			}
 		}
-//
-//		/* Loop through each and get product, then sum up and store the value */
-//		for (int i = 0; i < firstarray.length; i++) { 
-//		    for (int j = 0; j < secondarray.length; j++) { 
-//		        for (int k = 0; k < firstarray[0].length; k++) { 
-//		            result[i] += firstarray[i][k] * secondarray[k];
-//		        }
-//		    }
-//		}
 		return result;
 	}
 	
@@ -148,7 +138,7 @@ public class RedPetri {
 	
 	public boolean revisarInvariantes() throws Exception{
 		boolean invariante = true;
-		if (!(M0[0] + M0[1] == 2)){
+		if (!(M0[0] + M0[1] == 1)){
 			invariante = false;
 		}
 		if (!(M0[1] + M0[2] + M0[4] + M0[5] == 1)){

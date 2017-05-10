@@ -10,18 +10,9 @@ public class Main {
 	public static void main(String[] args) {
 		
 		final int NUMTRAN = 4;
-		final int NUMPLAZAS = 6;
+//		final int NUMPLAZAS = 6;
 		String fileMatrizI = "red.txt";
-		//int[][] I=new int[NUMPLAZAS][NUMTRAN];
 		int[][] I = readMatrix(fileMatrizI);
-//		for (int i=0;i<matrizI.size();i++){
-//			I[i] = convertIntegers(matrizI.get(i));
-//		}
-		
-//		for (int i = 0; i < matrizI.size(); i++) {
-//		    ArrayList<Integer> fila = matrizI.get(i);
-//		    matriz[i] = fila.toArray(new Integer[fila.size()]);
-//		}
 		
 		List<Integer> transiciones_hilo_1 = new MyLinkedList<Integer>();
 		List<Integer> transiciones_hilo_2 = new MyLinkedList<Integer>();
@@ -29,8 +20,8 @@ public class Main {
 		Collections.addAll(transiciones_hilo_1, 0,1);
 		Collections.addAll(transiciones_hilo_2, 3,2);
 		
+		GestorMonitor monitor = new GestorMonitor(NUMTRAN, I);
 		
-		GestorMonitor monitor = new GestorMonitor(NUMTRAN);
 		Hilo hilo1 = new Hilo(transiciones_hilo_1,monitor);
 		Hilo hilo2 = new Hilo(transiciones_hilo_2,monitor);
 		Thread thread1 = new Thread(hilo1);

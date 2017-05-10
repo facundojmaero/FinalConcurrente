@@ -3,30 +3,41 @@ import java.util.List;
 
 public class Tiempo {
 	
-	List<Long> transicionesConTiempo = new ArrayList<Long>();
+	List<Long> transicionesConTiempo;
 	int esperando[];
-	long alfa[];
-	long beta[];
+	long alfa[] = {1000,1000,1000,1000};
+	long beta[] = {1000000000,1000000000,1000000000,1000000000};
 	
-	public Tiempo(){
-		
+	public Tiempo(List<Integer> sensibilizadas_iniciales){
+		transicionesConTiempo = new ArrayList<Long>();
+		for (int i = 0; i < sensibilizadas_iniciales.size(); i++) {
+			transicionesConTiempo.add((long) 0);
+		}
+		this.setNuevoTimeStamp(sensibilizadas_iniciales);
+		esperando = new int[sensibilizadas_iniciales.size()];
 	}
 	
-	public boolean testVentanaTiempo(int transicion){
+	public int testVentanaTiempo(int transicion){
 		long current_time = System.currentTimeMillis();
 		long tiempo = current_time - transicionesConTiempo.get(transicion);
-		if (tiempo > alfa[transicion] && tiempo < beta[transicion]){
-			return true;
+		System.out.println(tiempo);
+		if(tiempo < alfa[transicion]){
+			return -1;
 		}
-		else{
-			return false;
+		else if(tiempo > beta[transicion]){
+			return 1;
 		}
+		else return 0;
 	}
 	
 	public long getTimeSleep(int transicion){
-		long sleep_time = transicionesConTiempo.get(transicion) + alfa[transicion];
-		sleep_time -= System.currentTimeMillis();
-		return sleep_time;
+		long sleepTime = (alfa[transicion] - (System.currentTimeMillis() - transicionesConTiempo.get(transicion)));
+		if(sleepTime > 0){
+			return sleepTime;
+		}
+		else{
+			return 0;
+		}
 	}
 	
 	public boolean alguienEsperando(int transicion){
@@ -45,11 +56,16 @@ public class Tiempo {
 		return;
 	}
 	
+	public void setEsperando(int transicion){
+		esperando[transicion] = 1;
+		return;
+	}
+	
 	public void setNuevoTimeStamp(List<Integer> newSensibilizadas){
 		for(int i=0;i<newSensibilizadas.size();i++){
 			//Si es una nueva transicion sensibilizada
 			if (newSensibilizadas.get(i) == 1){
-				transicionesConTiempo.set(i,System.currentTimeMillis());
+				transicionesConTiempo.set(i,(System.currentTimeMillis()));
 			}
 		}
 	}
