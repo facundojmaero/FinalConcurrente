@@ -12,9 +12,9 @@ public class GestorMonitor {
 	private List<Integer> sensibilizadas = new ArrayList<Integer>();
 	private List<Integer> quienesEnCola = new ArrayList<Integer>();
 	
-	public GestorMonitor(int cantidadTransiciones, int I[][]){
+	public GestorMonitor(int cantidadTransiciones, int I[][], int[] M){
 		
-		red = new RedPetri(cantidadTransiciones, I, entrada_monitor);
+		red = new RedPetri(cantidadTransiciones, I, M, entrada_monitor);
 		colas = new Semaphore[cantidadTransiciones];
 		for (int i=0;i<cantidadTransiciones;i++){
 			this.colas[i] = new Semaphore(0);

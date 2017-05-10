@@ -11,7 +11,9 @@ public class Main {
 		
 		final int NUMTRAN = 4;
 		String fileMatrizI = "red.txt";
+		String fileMarcado = "marcado.txt";
 		int[][] I = readMatrix(fileMatrizI);
+		int[] M = readMarcado(fileMarcado);
 		
 		List<Integer> transiciones_hilo_1 = new MyLinkedList<Integer>();
 		List<Integer> transiciones_hilo_2 = new MyLinkedList<Integer>();
@@ -19,7 +21,7 @@ public class Main {
 		Collections.addAll(transiciones_hilo_1, 0,1);
 		Collections.addAll(transiciones_hilo_2, 3,2);
 		
-		GestorMonitor monitor = new GestorMonitor(NUMTRAN, I);
+		GestorMonitor monitor = new GestorMonitor(NUMTRAN, I, M);
 		
 		Hilo hilo1 = new Hilo(transiciones_hilo_1,monitor);
 		Hilo hilo2 = new Hilo(transiciones_hilo_2,monitor);
@@ -61,7 +63,7 @@ public class Main {
 		return  I;
 	}
 	
-	public static int[] convertIntegers(List<Integer> integers)
+	private static int[] convertIntegers(List<Integer> integers)
 	{
 	    int[] ret = new int[integers.size()];
 	    for (int i=0; i < ret.length; i++)
@@ -69,5 +71,29 @@ public class Main {
 	        ret[i] = integers.get(i).intValue();
 	    }
 	    return ret;
+	}
+	
+	private static int[] readMarcado(String file){
+		// read in the data
+		Scanner input = null;
+		Scanner colReader = null;
+		try {
+			input = new Scanner(new File(file));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	    colReader = new Scanner(input.nextLine());
+	    colReader.next();
+	    ArrayList<Integer> col = new ArrayList<Integer>();
+	    while(colReader.hasNextInt())
+	    {
+	        col.add(colReader.nextInt());
+	    }
+		input.close();
+		colReader.close();
+		//Convierto de arrayList a array
+		int[] M = new int[col.size()];
+		M = convertIntegers(col);
+		return  M;
 	}
 }

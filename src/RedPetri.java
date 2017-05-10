@@ -5,20 +5,18 @@ import java.util.concurrent.Semaphore;
 public class RedPetri {
 	private static final Exception IllegalStateException = null;
 	
-	int M0[] = {1,0,1,1,0,0}; //marcado inicial productor consumidor
+	int M0[];//Marcado inicial
 	int I[][]; //red de petri
 	int S[];	//vector de disparo
 	int transiciones;
 	Tiempo tiempo;
 	Semaphore entradaMonitor;
 	
-//	int M0[] = {0,0,0,0,50,1,1,1,1,0,0,0,1,0,0,0,0,50,1,1,1,1,0,0,0,0,0,50,1};
-
-	
-	public RedPetri(int transiciones, int I[][], Semaphore entradaMonitor){
+	public RedPetri(int transiciones, int I[][], int M[], Semaphore entradaMonitor){
 		this.transiciones = transiciones;
 		S = new int[transiciones];
 		this.I = I;
+		M0 = M;
 		this.tiempo = new Tiempo(this.get_sensibilizadas());
 		this.entradaMonitor = entradaMonitor;
 	}
