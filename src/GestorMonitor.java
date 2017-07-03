@@ -37,15 +37,15 @@ public class GestorMonitor {
 		k = 1;
 		while(k == 1){
 			k = red.disparar(transicion);
-			System.out.println(Thread.currentThread().getName() + " Intentando disparar transicion " + transicion);
+//			System.out.println(Thread.currentThread().getName() + " Intentando disparar transicion " + transicion);
 			//Si no se cumple los invariantes
-			try {
-				red.revisarInvariantes();
-			} catch (Exception e) {
-				System.out.println("No se cumplen los invariantes. Finalizando programa");
-				e.printStackTrace();
-				System.exit(1);
-			}
+//			try {
+//				red.revisarInvariantes();
+//			} catch (Exception e) {
+//				System.out.println("No se cumplen los invariantes. Finalizando programa");
+//				e.printStackTrace();
+//				System.exit(1);
+//			}
 			
 			if (k == 1){
 				//Dispare una transicion correctamente
@@ -71,7 +71,7 @@ public class GestorMonitor {
 			}
 			
 			else if(k == 0){
-				System.out.println(Thread.currentThread().getName() + " transicion no sensibilizada" );
+				System.out.println(Thread.currentThread().getName() + " transicion " + transicion + " no sensibilizada" );
 				//No dispare por no estar sensibilizada
 				entrada_monitor.release();
 				try {
@@ -82,7 +82,7 @@ public class GestorMonitor {
 				}
 			}
 			else {//if(k == -1){
-				System.out.println(Thread.currentThread().getName() + " duermo, estoy antes del alfa" );
+//				System.out.println(Thread.currentThread().getName() + " duermo, estoy antes del alfa" );
 				//No dispare por no estar en ventana de tiempo
 				//Igual que el caso anterior pero no espero en la cola sino que me voy
 				return 1;

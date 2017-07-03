@@ -35,10 +35,10 @@ public class RedPetri {
 			tiempo.setEsperando(transicion);
 			entradaMonitor.release();
 			try {
-				System.out.println(Thread.currentThread().getName() + " Antes del alfa, durmiendo " + tiempo.getTimeSleep(transicion) + " ms");
+//				System.out.println(Thread.currentThread().getName() + " Antes del alfa, durmiendo " + tiempo.getTimeSleep(transicion) + " ms");
 				Thread.sleep(tiempo.getTimeSleep(transicion));
 			} catch (InterruptedException e) {
-				System.out.print("Error hilo esperando alfa");
+//				System.out.print("Error hilo esperando alfa");
 				e.printStackTrace();
 			}
 			return -1;
@@ -67,6 +67,8 @@ public class RedPetri {
 		}
 		return -1;
 	}
+	
+	
 	//Devuelve un ArrayList con 1 donde la transicion esta sensibilizada
 	public List<Integer> get_sensibilizadas(){
 		List<Integer> sensibilizadas = new ArrayList<Integer>(transiciones);
@@ -94,7 +96,7 @@ public class RedPetri {
 					sensibilizadas.set(index, 0);
 				}
 			}
-			
+//			sensibilizadas.set(index, 0);
 		}
 		return sensibilizadas;
 	}

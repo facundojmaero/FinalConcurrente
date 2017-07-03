@@ -9,27 +9,45 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		final int NUMTRAN = 4;
-		String fileMatrizI = "red.txt";
-		String fileMarcado = "marcado.txt";
+		final int NUMTRAN = 20; //4
+		String fileMatrizI = "red_tp_fix.txt";
+		String fileMarcado = "marcado_tp_fix.txt";
 		int[][] I = readMatrix(fileMatrizI);
 		int[] M = readMarcado(fileMarcado);
 		
 		List<Integer> transiciones_hilo_1 = new MyLinkedList<Integer>();
 		List<Integer> transiciones_hilo_2 = new MyLinkedList<Integer>();
+		List<Integer> transiciones_hilo_3 = new MyLinkedList<Integer>();
+		List<Integer> transiciones_hilo_4 = new MyLinkedList<Integer>();
+		List<Integer> transiciones_hilo_5 = new MyLinkedList<Integer>();
 
-		Collections.addAll(transiciones_hilo_1, 0,1);
-		Collections.addAll(transiciones_hilo_2, 3,2);
+//		Collections.addAll(transiciones_hilo_1, 0,1);
+//		Collections.addAll(transiciones_hilo_2, 3,2);
+		
+		Collections.addAll(transiciones_hilo_1, 1,2,3,4);
+		Collections.addAll(transiciones_hilo_2, 5,6,7,8,13);
+		Collections.addAll(transiciones_hilo_3, 9,10,11,12,13);
+		Collections.addAll(transiciones_hilo_4, 19,18,17,16,15,14);
+		Collections.addAll(transiciones_hilo_5, 0);
 		
 		GestorMonitor monitor = new GestorMonitor(NUMTRAN, I, M);
 		
 		Hilo hilo1 = new Hilo(transiciones_hilo_1,monitor);
 		Hilo hilo2 = new Hilo(transiciones_hilo_2,monitor);
+		Hilo hilo3 = new Hilo(transiciones_hilo_3,monitor);
+		Hilo hilo4 = new Hilo(transiciones_hilo_4,monitor);
+		Hilo hilo5 = new Hilo(transiciones_hilo_5,monitor);
 		Thread thread1 = new Thread(hilo1);
 		Thread thread2 = new Thread(hilo2);
+		Thread thread3 = new Thread(hilo3);
+		Thread thread4 = new Thread(hilo4);
+		Thread thread5 = new Thread(hilo5);
 		
 		thread2.start();
 		thread1.start();
+		thread3.start();
+		thread4.start();
+		thread5.start();
 	}
 	
 	private static int[][] readMatrix(String file){

@@ -5,13 +5,17 @@ public class Tiempo {
 	
 	List<Long> transicionesConTiempo;
 	int esperando[];
-	long alfa[] = {1000,1000,1000,1000};
-	long beta[] = {1000000000,1000000000,1000000000,1000000000};
+	long alfa[];// = {1000,1000,1000,1000};
+	long beta[];// = {1000000000,1000000000,1000000000,1000000000};
 	
 	public Tiempo(List<Integer> sensibilizadas_iniciales){
 		transicionesConTiempo = new ArrayList<Long>();
+		alfa = new long[sensibilizadas_iniciales.size()];
+		beta = new long[sensibilizadas_iniciales.size()];
 		for (int i = 0; i < sensibilizadas_iniciales.size(); i++) {
 			transicionesConTiempo.add((long) 0);
+			alfa[i] = 250;
+			beta[i] = 1000000000;
 		}
 		this.setNuevoTimeStamp(sensibilizadas_iniciales);
 		esperando = new int[sensibilizadas_iniciales.size()];
@@ -20,7 +24,7 @@ public class Tiempo {
 	public int testVentanaTiempo(int transicion){
 		long current_time = System.currentTimeMillis();
 		long tiempo = current_time - transicionesConTiempo.get(transicion);
-		System.out.println(Thread.currentThread().getName() + " " +tiempo);
+//		System.out.println(Thread.currentThread().getName() + " transicion " + transicion + " sensibilizada por " + tiempo + " ms");
 		if(tiempo < alfa[transicion]){
 			return -1;
 		}
