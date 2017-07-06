@@ -9,9 +9,8 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		final int NUMTRAN = 20; //4
-		String fileMatrizI = "red_tp_fix.txt";
-		String fileMarcado = "marcado_tp_fix.txt";
+		String fileMatrizI = "red.txt";
+		String fileMarcado = "marcado.txt";
 		int[][] I = readMatrix(fileMatrizI);
 		int[] M = readMarcado(fileMarcado);
 		
@@ -30,7 +29,7 @@ public class Main {
 		Collections.addAll(transiciones_hilo_4, 19,18,17,16,15,14);
 		Collections.addAll(transiciones_hilo_5, 0);
 		
-		GestorMonitor monitor = new GestorMonitor(NUMTRAN, I, M);
+		GestorMonitor monitor = new GestorMonitor(I, M);
 		
 		Hilo hilo1 = new Hilo(transiciones_hilo_1,monitor);
 		Hilo hilo2 = new Hilo(transiciones_hilo_2,monitor);
@@ -43,15 +42,15 @@ public class Main {
 		Thread thread4 = new Thread(hilo4);
 		Thread thread5 = new Thread(hilo5);
 		
-		thread2.start();
-		thread1.start();
-		thread3.start();
-		thread4.start();
-		thread5.start();
+//		thread2.start();
+//		thread1.start();
+//		thread3.start();
+//		thread4.start();
+//		thread5.start();
 	}
 	
 	private static int[][] readMatrix(String file){
-		// read in the data
+		
 		ArrayList<ArrayList<Integer>> matriz = new ArrayList<ArrayList<Integer>>();
 		Scanner input = null;
 		Scanner colReader = null;
@@ -73,7 +72,9 @@ public class Main {
 		}
 		input.close();
 		colReader.close();
+		
 		//Convierto de arrayList a array
+		
 		int[][] I=new int[matriz.size()][matriz.get(0).size()];
 		for (int i=0;i<matriz.size();i++){
 			I[i] = convertIntegers(matriz.get(i));
@@ -92,7 +93,7 @@ public class Main {
 	}
 	
 	private static int[] readMarcado(String file){
-		// read in the data
+
 		Scanner input = null;
 		Scanner colReader = null;
 		try {
@@ -109,7 +110,9 @@ public class Main {
 	    }
 		input.close();
 		colReader.close();
+		
 		//Convierto de arrayList a array
+		
 		int[] M = new int[col.size()];
 		M = convertIntegers(col);
 		return  M;

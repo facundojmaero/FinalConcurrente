@@ -12,20 +12,26 @@ public class GestorMonitor {
 	private List<Integer> sensibilizadas = new ArrayList<Integer>();
 	private List<Integer> quienesEnCola = new ArrayList<Integer>();
 	
-	public GestorMonitor(int cantidadTransiciones, int I[][], int[] M){
+	public GestorMonitor(int I[][], int[] M){
 		
-		red = new RedPetri(cantidadTransiciones, I, M, entrada_monitor);
-		colas = new Semaphore[cantidadTransiciones];
-		for (int i=0;i<cantidadTransiciones;i++){
+		red = new RedPetri(countTransitions(I), I, M, entrada_monitor);
+		colas = new Semaphore[countTransitions(I)];
+		for (int i=0;i<countTransitions(I);i++){
 			this.colas[i] = new Semaphore(0);
 		}
-		for (int i = 0; i < cantidadTransiciones; i++) {
+		for (int i = 0; i < countTransitions(I); i++) {
 			this.quienesEnCola.add(0);
 			this.sensibilizadas.add(0);
 		}
 	}
 	
-
+	private int countTransitions(int marcado[][]){
+		return marcado[0].length;
+	}
+	
+	private int countPlazas(int marcado[][]){
+		return marcado.length;
+	}
 	
 	public int dispararTransicion(int transicion){
 		try {
