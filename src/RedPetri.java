@@ -63,7 +63,7 @@ public class RedPetri {
 					} catch (InterruptedException e) {
 						System.out.print("Error hilo esperando alfa");
 						e.printStackTrace();
-					}	
+					}
 					break;
 				
 				case -2:

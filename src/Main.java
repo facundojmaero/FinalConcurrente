@@ -9,48 +9,65 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		String fileMatrizI = "red_tp.txt";
-		String fileMarcado = "marcado_tp.txt";
+		String fileMatrizI = "red.txt";
+		String fileMarcado = "marcado.txt";
 
 		int[][] I = readMatrix(fileMatrizI);
 		int[] M = readMarcado(fileMarcado);
-		int[][] invariantes = readMatrix("invariantes_tp.txt");
-
+		int[][] invariantes = readMatrix("invariantes.txt");
 		int[] resultadoInvariantes = generarEcuacionesInvariantes(invariantes, M);
-
-		List<Integer> transiciones_hilo_1 = new MyLinkedList<Integer>();
-		List<Integer> transiciones_hilo_2 = new MyLinkedList<Integer>();
-		List<Integer> transiciones_hilo_3 = new MyLinkedList<Integer>();
-		List<Integer> transiciones_hilo_4 = new MyLinkedList<Integer>();
-		List<Integer> transiciones_hilo_5 = new MyLinkedList<Integer>();
+		int[][] transicionesHilos = readMatrix("transicionesHilos.txt");
+		
+		int nroHilos = transicionesHilos.length;
+		
+		Hilo[] threadArray = new Hilo[nroHilos];
+		GestorMonitor monitor = new GestorMonitor(I, M, invariantes, resultadoInvariantes);
+		
+		for (int i = 0; i < nroHilos; i++) {
+			MyLinkedList<Integer> listaTransiciones = new MyLinkedList<Integer>();
+			for (int j = 0; j < transicionesHilos[i].length; j++) {
+				listaTransiciones.add(transicionesHilos[i][j]);
+			}
+			threadArray[i] = new Hilo(listaTransiciones, monitor);
+			Thread thread = new Thread(threadArray[i]);
+			try {Thread.sleep(1);} 
+			catch (InterruptedException e) {}
+			thread.start();
+		}
+//		List<Integer> transiciones_hilo_1 = new MyLinkedList<Integer>();
+//		List<Integer> transiciones_hilo_2 = new MyLinkedList<Integer>();
+//		List<Integer> transiciones_hilo_3 = new MyLinkedList<Integer>();
+//		List<Integer> transiciones_hilo_4 = new MyLinkedList<Integer>();
+//		List<Integer> transiciones_hilo_5 = new MyLinkedList<Integer>();
 
 //		Collections.addAll(transiciones_hilo_1, 0, 1);
 //		Collections.addAll(transiciones_hilo_2, 3, 2);
 
-		 Collections.addAll(transiciones_hilo_1, 1,2,3,4);
-		 Collections.addAll(transiciones_hilo_2, 5,6,7,8,13);
-		 Collections.addAll(transiciones_hilo_3, 9,10,11,12,13);
-		 Collections.addAll(transiciones_hilo_4, 19,18,17,16,15,14);
-		 Collections.addAll(transiciones_hilo_5, 0);
+//		 Collections.addAll(transiciones_hilo_1, 1,2,3,4);
+//		 Collections.addAll(transiciones_hilo_2, 5,6,7,8,13);
+//		 Collections.addAll(transiciones_hilo_3, 9,10,11,12,13);
+//		 Collections.addAll(transiciones_hilo_4, 19,18,17,16,15,14);
+//		 Collections.addAll(transiciones_hilo_5, 0);
 
-		GestorMonitor monitor = new GestorMonitor(I, M, invariantes, resultadoInvariantes);
+		
 
-		Hilo hilo1 = new Hilo(transiciones_hilo_1, monitor);
-		Hilo hilo2 = new Hilo(transiciones_hilo_2, monitor);
-		Hilo hilo3 = new Hilo(transiciones_hilo_3,monitor);
-		Hilo hilo4 = new Hilo(transiciones_hilo_4,monitor);
-		Hilo hilo5 = new Hilo(transiciones_hilo_5,monitor);
-		Thread thread1 = new Thread(hilo1);
-		Thread thread2 = new Thread(hilo2);
-		Thread thread3 = new Thread(hilo3);
-		Thread thread4 = new Thread(hilo4);
-		Thread thread5 = new Thread(hilo5);
-
-		thread1.start();
-		thread2.start();
-		thread3.start();
-		thread4.start();
-		thread5.start();
+//		Hilo hilo1 = new Hilo(monitor);
+//		Hilo hilo2 = new Hilo(monitor);
+//		Hilo hilo3 = new Hilo(transiciones_hilo_3,monitor);
+//		Hilo hilo4 = new Hilo(transiciones_hilo_4,monitor);
+//		Hilo hilo5 = new Hilo(transiciones_hilo_5,monitor);
+		
+//		Thread thread1 = new Thread(threadArray[0]);
+//		Thread thread2 = new Thread(threadArray[1]);
+//		Thread thread3 = new Thread(threadArray[2]);
+//		Thread thread4 = new Thread(threadArray[3]);
+//		Thread thread5 = new Thread(threadArray[4]);
+//
+//		thread1.start();
+//		thread2.start();
+//		thread3.start();
+//		thread4.start();
+//		thread5.start();
 	}
 
 	private static int[] generarEcuacionesInvariantes(int[][] invariantes, int[] marcado) {

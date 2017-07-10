@@ -14,7 +14,7 @@ public class Hilo implements Runnable {
 
 	@Override
 	public void run() {
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 10; i++) {
 			if (gestor.dispararTransicion(transicionActual) == 0) {
 				// la transicion se disparo, avanzo a la siguiente
 				siguienteTransicion();

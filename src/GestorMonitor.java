@@ -8,16 +8,16 @@ public class GestorMonitor {
 	final Semaphore entrada_monitor = new Semaphore(1);
 	private int k;
 	private RedPetri red;
-	private Semaphore colas[];
+	private MySemaphore colas[];
 	private List<Integer> sensibilizadas = new ArrayList<Integer>();
 	private List<Integer> quienesEnCola = new ArrayList<Integer>();
 
 	public GestorMonitor(int I[][], int[] M, int[][] invariantes, int[] resultadoInvariantes) {
 
 		red = new RedPetri(countTransitions(I), I, M, entrada_monitor, invariantes, resultadoInvariantes);
-		colas = new Semaphore[countTransitions(I)];
+		colas = new MySemaphore[countTransitions(I)];
 		for (int i = 0; i < countTransitions(I); i++) {
-			colas[i] = new Semaphore(0);
+			colas[i] = new MySemaphore();
 		}
 		for (int i = 0; i < countTransitions(I); i++) {
 			quienesEnCola.add(0);
@@ -37,8 +37,8 @@ public class GestorMonitor {
 		}
 		k = 1;
 		while (k == 1) {
-			System.out.println(Thread.currentThread().getName() + " Intentando disparar transicion " + transicion);
 			k = red.disparar(transicion);
+			System.out.println(Thread.currentThread().getName() + " Intentando disparar transicion " + transicion);
 			// Si no se cumple los invariantes
 			 try {
 			 red.revisarInvariantes();
@@ -46,10 +46,10 @@ public class GestorMonitor {
 			 e.printStackTrace();
 			 System.exit(1);
 			 }
-
+			 System.out.println("     " + t + " pase el chequeo de invariantes");
 			if (k == 1) {
 				// Dispare una transicion correctamente
-				System.out.println(t + " Dispare transicion " + transicion);
+				System.out.println("         " + t + " Dispare transicion " + transicion);
 				sensibilizadas = red.get_sensibilizadas();
 				// Actualizo quienes estan en la cola
 
@@ -79,7 +79,7 @@ public class GestorMonitor {
 				} else {
 					k = 0;
 					// Salgo del while
-					System.out.println(t + " salgo del monitor");
+					System.out.println(t + " salgo del monitor sin despertar a nadie" + listasParaDisparar.toString());
 					entrada_monitor.release();
 					
 					return 0;
@@ -91,11 +91,7 @@ public class GestorMonitor {
 				System.out.println(t + " salgo del monitor y me pongo a esperar en una cola");
 				entrada_monitor.release();
 
-				try {
-					colas[transicion].acquire();
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
-				}
+				colas[transicion].acquire();
 
 			} else if (k == -1){
 				
@@ -109,11 +105,7 @@ public class GestorMonitor {
 				System.out.println(t + " salgo del monitor y me pongo a esperar en una cola");
 				entrada_monitor.release();
 
-				try {
-					colas[transicion].acquire();
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
-				}
+				colas[transicion].acquire();
 			}
 		}
 		
@@ -128,7 +120,8 @@ public class GestorMonitor {
 			// Lleno quienesEnCola con "1" donde hay hilos esperando y "0" donde no los hay
 			
 //			int cantidad_hilos_cola = colas[i].getQueueLength();
-			boolean hay_hilos_cola = colas[i].hasQueuedThreads();
+//			boolean hay_hilos_cola = colas[i].hasQueuedThreads();
+			boolean hay_hilos_cola = colas[i].isTaken();
 			
 			if (hay_hilos_cola) {
 				quienesEnCola.set(i, 1);
