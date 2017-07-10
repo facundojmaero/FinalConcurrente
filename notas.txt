@@ -1,0 +1,30 @@
+Codigos de error
+
+disparar() (red de petri)
+	1 -> disparo correcto
+	-1 -> antes del alfa
+	-2 -> despues del beta
+	-3 -> transicion no sensibilizada
+
+
+REVISAR DESPUES DEL BETA QUE HACE EL HILO
+
+// El archivo de texto leido se interpreta de la siguiente manera
+// Es una matriz que describe la logica de la red de Petri
+// Cada fila es una plaza, comenzando por P0, P1 ...
+// Cada columna es una transicion, T0, T1 ...
+int[][] I = readMatrix(fileMatrizI);
+
+// El archivo leido describe el marcado inicial de la red
+// Es una secuencia de N numeros, siendo N la cantidad de plazas de la red
+// Comenzando por P0, P1 ...
+int[] M = readMarcado(fileMarcado);
+
+// Lee los invariantes de plaza del archivo indicado.
+// La estructura del mismo consiste en una ecuacion de invariantes por
+// linea
+// Cada columna es una plaza, empezando por P0, P1 ...
+// Una ecuacion dada indica que la suma de los tokens en las plazas que
+// tengan un 1 es constante
+// Ese numero constante dependera del marcado inicial de la red
+int[][] invariantes = readMatrix("invariantes_tp.txt");

@@ -1,19 +1,25 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
 public class RedPetri {
 	private static final Exception IllegalStateException = null;
 	
-	int M0[];//Marcado inicial
-	int I[][]; //red de petri
+	int M0[];	//Marcado inicial
+	int I[][]; 	//red de petri
 	int S[];	//vector de disparo
 	int transiciones;
+	int[][] invariantes;
+	int[] resultadoInvariantes;
+	
 	Tiempo tiempo;
 	Semaphore entradaMonitor;
 	
-	public RedPetri(int transiciones, int I[][], int M[], Semaphore entradaMonitor){
+	public RedPetri(int transiciones, int I[][], int M[], Semaphore entradaMonitor, int[][] invariantes, int[] resultadoInvariantes){
 		this.transiciones = transiciones;
+		this.invariantes = invariantes;
+		this.resultadoInvariantes = resultadoInvariantes;
 		S = new int[transiciones];
 		this.I = I;
 		M0 = M;
@@ -21,59 +27,77 @@ public class RedPetri {
 		this.entradaMonitor = entradaMonitor;
 	}
 	
-	public int disparar(int transicion){
+	private void setTransicionEnVector(int transicion){
 		// Pongo 0 en todas las transiciones que no quiero disparar y 1 en la que si voy a disparar
 		for (int i=0;i<transiciones;i++){
 			S[i] = 0;
 		}
 		S[transicion] = 1;
-	
-		int result = tiempo.testVentanaTiempo(transicion);
-		
-		if(result == -1){
-			//estoy antes del alfa, tengo que dormir y salir del monitor
-			tiempo.setEsperando(transicion);
-			entradaMonitor.release();
-			try {
-//				System.out.println(Thread.currentThread().getName() + " Antes del alfa, durmiendo " + tiempo.getTimeSleep(transicion) + " ms");
-				Thread.sleep(tiempo.getTimeSleep(transicion));
-			} catch (InterruptedException e) {
-//				System.out.print("Error hilo esperando alfa");
-				e.printStackTrace();
-			}
-			return -1;
-		}
-//		else if (result == 1){
-//			//estoy despues del beta
-//		}
-		else if (result == 0){
-			//estoy en la ventana correcta, sigo la ejecucion
-			
-			List<Integer> oldSensibilizadas = get_sensibilizadas();
-			int MTemp[] = sumar(M0, multiplicar(I, S));
-			int disparar = 1;
-			for (int i = 0; i < MTemp.length; i++) {
-				if (MTemp[i]<0){
-					disparar = 0;
-				}
-			}
-			if(disparar == 1){
-				M0 = MTemp;
-				List<Integer> actualSensibilizadas = get_sensibilizadas();
-				tiempo.setNuevoTimeStamp(calcularNewSensibilizadas(oldSensibilizadas, actualSensibilizadas));
-			}
-			
-			return disparar;
-		}
-		return -1;
 	}
 	
+	private boolean estaSensibilizada(int transicion){
+		List<Integer> sensibilizadas = get_sensibilizadas();
+		if(sensibilizadas.get(transicion) == 1){return true;}
+		else {return false;}
+	}
+	
+	public int disparar(int transicion){
+		
+		String t = Thread.currentThread().getName(); 
+		
+		setTransicionEnVector(transicion);
+		boolean sensib = estaSensibilizada(transicion);
+		
+		if(sensib){
+			int testTiempo = tiempo.testVentanaTiempo(transicion);
+			
+			switch (testTiempo){
+				case -1:
+					//estoy antes del alfa, tengo que dormir y salir del monitor
+					
+					tiempo.setEsperando(transicion);
+					entradaMonitor.release();
+					System.out.println(t + " Antes del alfa, durmiendo " + tiempo.getTimeSleep(transicion) + " ms");
+					try {
+						Thread.sleep(tiempo.getTimeSleep(transicion));
+					} catch (InterruptedException e) {
+						System.out.print("Error hilo esperando alfa");
+						e.printStackTrace();
+					}	
+					break;
+				
+				case -2:
+					//estoy despues del beta
+					System.out.println(Thread.currentThread().getName() + " Estoy despues del beta");
+					tiempo.setEsperando(transicion);
+					entradaMonitor.release();
+					break;
+					
+				case 1:
+					//estoy en la ventana correcta, sigo la ejecucion
+					List<Integer> oldSensibilizadas = get_sensibilizadas();
+					M0 = sumarVectores(M0, multiplicarMatrices(I, S));
+					List<Integer> actualSensibilizadas = get_sensibilizadas();
+					tiempo.setNuevoTimeStamp(calcularNewSensibilizadas(oldSensibilizadas, actualSensibilizadas));
+					tiempo.resetEsperando(transicion);
+					break;
+					
+				default:
+					break;
+			}
+			return testTiempo;
+		}
+		else{
+			//transicion no sensibilizada, el hilo se va a esperar a la cola
+			return -3;
+		}
+	}
 	
 	//Devuelve un ArrayList con 1 donde la transicion esta sensibilizada
 	public List<Integer> get_sensibilizadas(){
+		
 		List<Integer> sensibilizadas = new ArrayList<Integer>(transiciones);
-//		sensibilizadas.add(0, 0);
-//		sensibilizadas.add(1, 0);
+		
 		for (int i = 0; i < transiciones; i++) {
 			sensibilizadas.add(0);
 		}
@@ -87,16 +111,19 @@ public class RedPetri {
 			
 			//pongo un 1 en la transicion index previamente. Si llegara a no estar sensibilizada
 			//pongo un 0 fijandome
+			
 			sensibilizadas.set(index, 1);
+			
 			//multiplico la matriz por el vector que trata de disparar una transicion dada
 			//si resultado tiene un elemento menor a 0 la transicion no puede dispararse
-			resultado = sumar(M0,multiplicar(I, tr));
+			
+			resultado = sumarVectores(M0,multiplicarMatrices(I, tr));
+			
 			for (int j = 0; j < resultado.length; j++) {
 				if(resultado[j]<0){
 					sensibilizadas.set(index, 0);
 				}
 			}
-//			sensibilizadas.set(index, 0);
 		}
 		return sensibilizadas;
 	}
@@ -105,7 +132,7 @@ public class RedPetri {
 	//se usa para saber que transiciones estan sensibilizadas
 	private int[] cycleTransicion(int index, int[] vector){
 		
-		//leno de 0 vector
+		//leno de 0 el vector
 		for (int i = 0; i < vector.length; i++) {
 			vector[i]=0;
 		}
@@ -115,8 +142,7 @@ public class RedPetri {
 		return vector;
 	}
 	
-	private int[] multiplicar (int[][] firstarray,int[] secondarray){
-		/* Create another 2d array to store the result using the original arrays' lengths on row and column respectively. */
+	private int[] multiplicarMatrices (int[][] firstarray,int[] secondarray){
 		int [] result = new int[firstarray.length];
 		
 		for (int i = 0; i < result.length; i++) {
@@ -127,7 +153,7 @@ public class RedPetri {
 		return result;
 	}
 	
-	private int[] sumar (int[] firstarray, int[] secondarray){
+	private int[] sumarVectores (int[] firstarray, int[] secondarray){
 		int [] resultado = new int[secondarray.length];
 		for (int i = 0; i < secondarray.length; i++) {
 			resultado[i] = firstarray[i] + secondarray[i];
@@ -140,23 +166,38 @@ public class RedPetri {
 	}
 	
 	public boolean revisarInvariantes() throws Exception{
-		boolean invariante = true;
-		if (!(M0[0] + M0[1] == 1)){
-			invariante = false;
+		for (int i = 0; i < invariantes.length; i++) {
+			
+			int check = 0;
+			
+			for (int j = 0; j < invariantes[0].length; j++) {
+				
+				if(invariantes[i][j] != 0)
+					check += M0[j];
+			}
+			if(check != resultadoInvariantes[i]){
+				printError(i);
+				throw IllegalStateException;
+			}
 		}
-		if (!(M0[1] + M0[2] + M0[4] + M0[5] == 1)){
-			invariante = false;
-		}
-		if(!(M0[3] + M0[4] == 1)){
-			invariante = false;
-		}
-		
-		if (!invariante){
-			throw IllegalStateException;
-		}
-		
-		return invariante;
+		return true;
+	}
 	
+	private void printError(int ecuacion){
+		System.out.println("Error de invariantes, ecuacion " + ecuacion + " no se cumple");
+		System.out.print("Suma de tokens en plazas ");
+		
+		int suma = 0;
+		
+		for (int i = 0; i < invariantes[0].length; i++) {
+			if(invariantes[ecuacion][i] != 0){
+				System.out.print(i + " ");
+				suma += M0[i];
+			}
+		}
+		System.out.println("debe ser " + resultadoInvariantes[ecuacion] + ", pero es " + suma);
+		System.out.println("Marcado: "+ Arrays.toString(getMarcado()));
+		
 	}
 	
 	//Devuelve un vector con las transiciones nuevas que se sensibilizaron
