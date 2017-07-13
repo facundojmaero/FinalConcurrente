@@ -23,7 +23,7 @@ public class RedPetri {
 		S = new int[transiciones];
 		this.I = I;
 		M0 = M;
-		this.tiempo = new Tiempo(this.get_sensibilizadas());
+		tiempo = new Tiempo(this.get_sensibilizadas());
 		this.entradaMonitor = entradaMonitor;
 	}
 	
@@ -56,21 +56,21 @@ public class RedPetri {
 					//estoy antes del alfa, tengo que dormir y salir del monitor
 					
 					tiempo.setEsperando(transicion);
-					entradaMonitor.release();
-					System.out.println(t + " Antes del alfa, durmiendo " + tiempo.getTimeSleep(transicion) + " ms");
-					try {
-						Thread.sleep(tiempo.getTimeSleep(transicion));
-					} catch (InterruptedException e) {
-						System.out.print("Error hilo esperando alfa");
-						e.printStackTrace();
-					}
+//					System.out.println(t + " Antes del alfa, durmiendo " + tiempo.getTimeSleep(transicion) + " ms [" + entradaMonitor.availablePermits() + "]");
+//					entradaMonitor.release();
+//					System.out.println(t + " {" + entradaMonitor.availablePermits() + "}");
+//					try {
+//						Thread.sleep(tiempo.getTimeSleep(transicion));
+//					} catch (InterruptedException e) {
+//						System.out.print("Error hilo esperando alfa");
+//						e.printStackTrace();
+//					}
 					break;
 				
 				case -2:
 					//estoy despues del beta
 					System.out.println(Thread.currentThread().getName() + " Estoy despues del beta");
 					tiempo.setEsperando(transicion);
-					entradaMonitor.release();
 					break;
 					
 				case 1:

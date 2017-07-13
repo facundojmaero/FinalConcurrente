@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -9,14 +8,14 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		String fileMatrizI = "red.txt";
-		String fileMarcado = "marcado.txt";
+		String fileMatrizI = "red_tp.txt";
+		String fileMarcado = "marcado_tp.txt";
 
 		int[][] I = readMatrix(fileMatrizI);
 		int[] M = readMarcado(fileMarcado);
-		int[][] invariantes = readMatrix("invariantes.txt");
+		int[][] invariantes = readMatrix("invariantes_tp.txt");
 		int[] resultadoInvariantes = generarEcuacionesInvariantes(invariantes, M);
-		int[][] transicionesHilos = readMatrix("transicionesHilos.txt");
+		int[][] transicionesHilos = readMatrix("transicionesHilos_tp.txt");
 		
 		int nroHilos = transicionesHilos.length;
 		
@@ -30,8 +29,6 @@ public class Main {
 			}
 			threadArray[i] = new Hilo(listaTransiciones, monitor);
 			Thread thread = new Thread(threadArray[i]);
-			try {Thread.sleep(1);} 
-			catch (InterruptedException e) {}
 			thread.start();
 		}
 //		List<Integer> transiciones_hilo_1 = new MyLinkedList<Integer>();

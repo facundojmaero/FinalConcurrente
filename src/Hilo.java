@@ -14,14 +14,19 @@ public class Hilo implements Runnable {
 
 	@Override
 	public void run() {
-		for (int i = 0; i < 10; i++) {
+//		for (int i = 0; i < 100; i++) {
+		while(true){
 			if (gestor.dispararTransicion(transicionActual) == 0) {
 				// la transicion se disparo, avanzo a la siguiente
+				
+				int transicionActualAux = transicionActual;
 				siguienteTransicion();
+				
+				gestor.writeToLog(transicionActualAux + " " + transicionActual + " " + Thread.currentThread().getName());
 			}
 		}
-		System.out.println("Terminando de correr hilo " + Thread.currentThread().getName());
-		gestor.verMarcado();
+//		System.out.println("Terminando de correr hilo " + Thread.currentThread().getName());
+//		gestor.verMarcado();
 	}
 
 	public int getTransicionActual() {

@@ -17,7 +17,7 @@ public class Tiempo {
 		for (int i = 0; i < sensibilizadas_iniciales.size(); i++) {
 			transicionesConTiempo.add((long) 0);
 			alfa[i] = 50;
-			beta[i] = 10000;
+			beta[i] = 100000;
 		}
 		
 		setNuevoTimeStamp(sensibilizadas_iniciales);

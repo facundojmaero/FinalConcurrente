@@ -6,9 +6,6 @@ disparar() (red de petri)
 	-2 -> despues del beta
 	-3 -> transicion no sensibilizada
 
-
-REVISAR DESPUES DEL BETA QUE HACE EL HILO
-
 // El archivo de texto leido se interpreta de la siguiente manera
 // Es una matriz que describe la logica de la red de Petri
 // Cada fila es una plaza, comenzando por P0, P1 ...
@@ -28,3 +25,16 @@ int[] M = readMarcado(fileMarcado);
 // tengan un 1 es constante
 // Ese numero constante dependera del marcado inicial de la red
 int[][] invariantes = readMatrix("invariantes_tp.txt");
+
+El problema que tenemos con la red al trabarse es que cuando un hilo vuelve de
+dormir, comparte el valor de 'k' con los demas en el monitor, y si varios
+hilos se despiertan al mismo tiempo, se mezclan esos valores de 'k' causando
+comportamientos inesperados.  Por ejemplo sucedia que un hilo llamaba dos
+veces a release, transformando el mutex en un semaforo comun y corriente, o un
+hilo tenia que despertar a alguien pero no lo hacia por culpa del
+comportamiento de los demas.
+
+Para solucionar este problema, en lugar del hilo dormir en la clase red de
+petri, retorna -1 (antes del alfa), y en el gestor se le pregunta a la clase
+tiempo cuanto debe dormir el hilo, por lo que no hay problemas con el k de
+retorno del metodo disparar.
