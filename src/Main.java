@@ -10,18 +10,21 @@ public class Main {
 
 		String fileMatrizI = "red_tp.txt";
 		String fileMarcado = "marcado_tp.txt";
+		String fileInvariantes = "invariantes_tp.txt";
+		String fileTransiciones = "transicionesHilos_tp.txt";
+		String fileTiempos = "tiempos_tp.txt";
 
 		int[][] I = readMatrix(fileMatrizI);
-		int[] M = readMarcado(fileMarcado);
-		int[][] invariantes = readMatrix("invariantes_tp.txt");
+		int[] M = readVector(fileMarcado);
+		int[][] invariantes = readMatrix(fileInvariantes);
 		int[] resultadoInvariantes = generarEcuacionesInvariantes(invariantes, M);
-		int[][] transicionesHilos = readMatrix("transicionesHilos_tp.txt");
+		int[][] transicionesHilos = readMatrix(fileTransiciones);
+		int[] tiempos = readVector(fileTiempos);
 		
 		int nroHilos = transicionesHilos.length;
 		
 		Hilo[] threadArray = new Hilo[nroHilos];
-		GestorMonitor monitor = new GestorMonitor(I, M, invariantes, resultadoInvariantes);
-		
+		GestorMonitor monitor = new GestorMonitor(I, M, invariantes, resultadoInvariantes, tiempos);
 		GestorPiezas gestorPiezas = new GestorPiezas(3);
 		
 		for (int i = 0; i < nroHilos; i++) {
@@ -142,7 +145,7 @@ public class Main {
 		return ret;
 	}
 
-	private static int[] readMarcado(String file) {
+	private static int[] readVector(String file) {
 
 		Scanner input = null;
 		try {

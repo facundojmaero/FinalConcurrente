@@ -14,9 +14,9 @@ public class GestorMonitor {
 	
 	private List<String> log = new ArrayList<String>();
 
-	public GestorMonitor(int I[][], int[] M, int[][] invariantes, int[] resultadoInvariantes) {
+	public GestorMonitor(int I[][], int[] M, int[][] invariantes, int[] resultadoInvariantes, int[] tiempos) {
 
-		red = new RedPetri(countTransitions(I), I, M, entrada_monitor, invariantes, resultadoInvariantes);
+		red = new RedPetri(countTransitions(I), I, M, entrada_monitor, invariantes, resultadoInvariantes, tiempos);
 		colas = new MySemaphore[countTransitions(I)];
 		for (int i = 0; i < countTransitions(I); i++) {
 			colas[i] = new MySemaphore();

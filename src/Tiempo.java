@@ -7,16 +7,17 @@ public class Tiempo {
 	int esperando[];
 	long alfa[];// = {250,0,0,0};
 	long beta[];// = {1000000000,1000000000,1000000000,1000000000};
+	int[] tiempos;
 
-	public Tiempo(List<Integer> sensibilizadas_iniciales) {
+	public Tiempo(List<Integer> sensibilizadas_iniciales, int[] tiempos) {
 		
 		transicionesConTiempo = new ArrayList<Long>();
 		alfa = new long[sensibilizadas_iniciales.size()];
 		beta = new long[sensibilizadas_iniciales.size()];
 		
-		for (int i = 0; i < sensibilizadas_iniciales.size(); i++) {
+		for (int i = 0; i < tiempos.length; i++) {
 			transicionesConTiempo.add((long) 0);
-			alfa[i] = 50;
+			alfa[i] = tiempos[i];
 			beta[i] = 100000;
 		}
 		

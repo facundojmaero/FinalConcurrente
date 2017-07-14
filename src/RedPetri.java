@@ -16,14 +16,14 @@ public class RedPetri {
 	Tiempo tiempo;
 	Semaphore entradaMonitor;
 	
-	public RedPetri(int transiciones, int I[][], int M[], Semaphore entradaMonitor, int[][] invariantes, int[] resultadoInvariantes){
+	public RedPetri(int transiciones, int I[][], int M[], Semaphore entradaMonitor, int[][] invariantes, int[] resultadoInvariantes, int[] tiempos){
 		this.transiciones = transiciones;
 		this.invariantes = invariantes;
 		this.resultadoInvariantes = resultadoInvariantes;
 		S = new int[transiciones];
 		this.I = I;
 		M0 = M;
-		tiempo = new Tiempo(this.get_sensibilizadas());
+		tiempo = new Tiempo(this.get_sensibilizadas(), tiempos);
 		this.entradaMonitor = entradaMonitor;
 	}
 	
