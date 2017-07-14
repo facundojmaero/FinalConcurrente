@@ -22,15 +22,25 @@ public class Main {
 		Hilo[] threadArray = new Hilo[nroHilos];
 		GestorMonitor monitor = new GestorMonitor(I, M, invariantes, resultadoInvariantes);
 		
+		GestorPiezas gestorPiezas = new GestorPiezas(3);
+		
 		for (int i = 0; i < nroHilos; i++) {
 			MyLinkedList<Integer> listaTransiciones = new MyLinkedList<Integer>();
 			for (int j = 0; j < transicionesHilos[i].length; j++) {
 				listaTransiciones.add(transicionesHilos[i][j]);
 			}
-			threadArray[i] = new Hilo(listaTransiciones, monitor);
+			threadArray[i] = new Hilo(listaTransiciones, monitor, gestorPiezas);
 			Thread thread = new Thread(threadArray[i]);
 			thread.start();
 		}
+		
+		threadArray[0].setTipoPieza(0);
+		threadArray[1].setTipoPieza(1);
+		threadArray[2].setTipoPieza(1);		
+		threadArray[3].setTipoPieza(2);
+		threadArray[4].setTipoPieza(-1);
+		
+		
 //		List<Integer> transiciones_hilo_1 = new MyLinkedList<Integer>();
 //		List<Integer> transiciones_hilo_2 = new MyLinkedList<Integer>();
 //		List<Integer> transiciones_hilo_3 = new MyLinkedList<Integer>();

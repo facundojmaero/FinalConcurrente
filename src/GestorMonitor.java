@@ -32,17 +32,17 @@ public class GestorMonitor {
 		String t = Thread.currentThread().getName();
 		
 		try {
-			System.out.println(t + " {{" + entrada_monitor.availablePermits() + "}} b4");
+//			System.out.println(t + " {{" + entrada_monitor.availablePermits() + "}} b4");
 			entrada_monitor. acquire();
-			System.out.println(t + " obtuve la entrada al monitor");
-			System.out.println(t + " {{" + entrada_monitor.availablePermits() + "}}");
+//			System.out.println(t + " obtuve la entrada al monitor");
+//			System.out.println(t + " {{" + entrada_monitor.availablePermits() + "}}");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		k = 1;
 		while (k == 1) {
 			k = red.disparar(transicion);
-			System.out.println(Thread.currentThread().getName() + " Intentando disparar transicion " + transicion + " k = " + k);
+//			System.out.println(Thread.currentThread().getName() + " Intentando disparar transicion " + transicion + " k = " + k);
 			
 			if (k == 1) {
 			
@@ -55,7 +55,7 @@ public class GestorMonitor {
 				 }
 				
 				// Dispare una transicion correctamente
-				System.out.println("         " + t + " Dispare transicion " + transicion + ", k = " + k);
+//				System.out.println("         " + t + " Dispare transicion " + transicion + ", k = " + k);
 				
 				sensibilizadas = red.get_sensibilizadas();
 
@@ -76,34 +76,34 @@ public class GestorMonitor {
 					// Despierto a un hilo que esta esperando por esa transicion
 					colas[indiceDespertar].release();
 					
-					System.out.println(t + " desperte al hilo en transicion " + indiceDespertar);
+//					System.out.println(t + " desperte al hilo en transicion " + indiceDespertar);
 					
 					return 0;
 
 				} else {
 //					k = 0;
 					// Salgo del while
-					System.out.println(t + " salgo del monitor sin despertar a nadie [" + entrada_monitor.availablePermits() + "]");
+//					System.out.println(t + " salgo del monitor sin despertar a nadie [" + entrada_monitor.availablePermits() + "]");
 					entrada_monitor.release();
-					System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
+//					System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
 					
 					return 0;
 				}
 			} else if (k == -3) {
-				System.out.println(t + " transicion " + transicion + " no sensibilizada, me voy a la cola");
+//				System.out.println(t + " transicion " + transicion + " no sensibilizada, me voy a la cola");
 				
 				// No dispare por no estar sensibilizada
-				System.out.println(t + " salgo del monitor y me pongo a esperar en una cola [" + entrada_monitor.availablePermits() + "]");
+//				System.out.println(t + " salgo del monitor y me pongo a esperar en una cola [" + entrada_monitor.availablePermits() + "]");
 				entrada_monitor.release();
-				System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
+//				System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
 //				k = 1;
 				colas[transicion].acquire();
 
 			} else if (k == -1){
 				
-				System.out.println(t + " Antes del alfa, durmiendo " + red.tiempo.getTimeSleep(transicion) + " ms [" + entrada_monitor.availablePermits() + "]");
+//				System.out.println(t + " Antes del alfa, durmiendo " + red.tiempo.getTimeSleep(transicion) + " ms [" + entrada_monitor.availablePermits() + "]");
 				entrada_monitor.release();
-				System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
+//				System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
 				
 				try {
 					Thread.sleep(red.tiempo.getTimeSleep(transicion));
@@ -115,16 +115,16 @@ public class GestorMonitor {
 				// No dispare por no estar en ventana de tiempo (antes del alfa)
 				// Igual que el caso anterior pero no espero en la cola sino que me voy
 //				k = 1;
-				System.out.println(t + " saliendo del monitor despues de dormir con k = " + k);
+//				System.out.println(t + " saliendo del monitor despues de dormir con k = " + k);
 				return 1;
 
 			} else if(k== -2){
 				//estoy despues del beta, me voy a la cola a esperar
-				System.out.println(t + " transicion " + transicion + " despues del beta, me voy a la cola");
-				System.out.println(t + " salgo del monitor y me pongo a esperar en una cola [" + entrada_monitor.availablePermits() + "]");
+//				System.out.println(t + " transicion " + transicion + " despues del beta, me voy a la cola");
+//				System.out.println(t + " salgo del monitor y me pongo a esperar en una cola [" + entrada_monitor.availablePermits() + "]");
 //				k = 1;
 				entrada_monitor.release();
-				System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
+//				System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
 				colas[transicion].acquire();
 			}
 			else{
@@ -133,10 +133,10 @@ public class GestorMonitor {
 			}
 		}
 		
-		System.out.println(t + " salgo del monitor [" + entrada_monitor.availablePermits() + "]");
+//		System.out.println(t + " salgo del monitor [" + entrada_monitor.availablePermits() + "]");
 		entrada_monitor.release();
-		System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
-		System.out.println("USANDO ULTIMO RETURN " + t);
+//		System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
+//		System.out.println("USANDO ULTIMO RETURN " + t);
 		return 0;
 	}
 

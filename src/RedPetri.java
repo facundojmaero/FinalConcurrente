@@ -69,7 +69,7 @@ public class RedPetri {
 				
 				case -2:
 					//estoy despues del beta
-					System.out.println(Thread.currentThread().getName() + " Estoy despues del beta");
+//					System.out.println(Thread.currentThread().getName() + " Estoy despues del beta");
 					tiempo.setEsperando(transicion);
 					break;
 					

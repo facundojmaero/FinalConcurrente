@@ -31,8 +31,8 @@ public class Tiempo {
 		long current_time = System.currentTimeMillis();
 		long tiempo = current_time - transicionesConTiempo.get(transicion);
 		
-		System.out.println(t + " transicion "
-		+ transicion + " sensibilizada por " + tiempo + " ms");
+//		System.out.println(t + " transicion "
+//		+ transicion + " sensibilizada por " + tiempo + " ms");
 		
 		if (tiempo < alfa[transicion]) {
 			return -1;
