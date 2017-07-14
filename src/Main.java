@@ -26,19 +26,23 @@ public class Main {
 		
 		for (int i = 0; i < nroHilos; i++) {
 			MyLinkedList<Integer> listaTransiciones = new MyLinkedList<Integer>();
-			for (int j = 0; j < transicionesHilos[i].length; j++) {
+			int j;
+			for (j = 0; j < transicionesHilos[i].length -1 ; j++) {
 				listaTransiciones.add(transicionesHilos[i][j]);
 			}
 			threadArray[i] = new Hilo(listaTransiciones, monitor, gestorPiezas);
+			
+			threadArray[i].setTipoPieza(transicionesHilos[i][j]);
+			
 			Thread thread = new Thread(threadArray[i]);
 			thread.start();
 		}
 		
-		threadArray[0].setTipoPieza(0);
-		threadArray[1].setTipoPieza(1);
-		threadArray[2].setTipoPieza(1);		
-		threadArray[3].setTipoPieza(2);
-		threadArray[4].setTipoPieza(-1);
+//		threadArray[0].setTipoPieza(0);
+//		threadArray[1].setTipoPieza(1);
+//		threadArray[2].setTipoPieza(1);		
+//		threadArray[3].setTipoPieza(2);
+//		threadArray[4].setTipoPieza(-1);
 		
 		
 //		List<Integer> transiciones_hilo_1 = new MyLinkedList<Integer>();

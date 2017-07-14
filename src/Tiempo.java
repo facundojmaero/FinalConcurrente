@@ -26,33 +26,24 @@ public class Tiempo {
 
 	public int testVentanaTiempo(int transicion) {
 		
-		String t = Thread.currentThread().getName();
-		
 		long current_time = System.currentTimeMillis();
 		long tiempo = current_time - transicionesConTiempo.get(transicion);
 		
-//		System.out.println(t + " transicion "
-//		+ transicion + " sensibilizada por " + tiempo + " ms");
-		
-		if (tiempo < alfa[transicion]) {
-			return -1;
-		} else if (tiempo > beta[transicion]) {
-			return -2;
-		} else
-			return 1;
+		if (tiempo < alfa[transicion]) 		{ return -1; } 
+		else if (tiempo > beta[transicion]) { return -2; } 
+		else 								{ return 1; }
 	}
 
 	public long getTimeSleep(int transicion) {
 		long sleepTime = (alfa[transicion] - (System.currentTimeMillis() - transicionesConTiempo.get(transicion)));
-		if (sleepTime > 0) {
-			return sleepTime;
-		} else {
-			return 0;
-		}
+		
+		if (sleepTime > 0) 	{ return sleepTime; } 
+		else 				{ return 0; }
 	}
 
 	public boolean alguienEsperando(int transicion) {
 		// Si hay alguien esperando
+		
 		if (esperando[transicion] != 0) {
 			return true;
 		} else {
@@ -60,15 +51,8 @@ public class Tiempo {
 		}
 	}
 
-	public void resetEsperando(int transicion) {
-		esperando[transicion] = 0;
-		return;
-	}
-
-	public void setEsperando(int transicion) {
-		esperando[transicion] = 1;
-		return;
-	}
+	public void resetEsperando(int transicion) { esperando[transicion] = 0; }
+	public void setEsperando(int transicion) { esperando[transicion] = 1; }
 
 	public void setNuevoTimeStamp(List<Integer> newSensibilizadas) {
 		

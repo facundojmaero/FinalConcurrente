@@ -21,7 +21,7 @@ public class Hilo implements Runnable {
 	@Override
 	public void run() {
 		
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 10; i++) {
 //		while(true){
 			
 			for (int j = 0; j < transiciones.size(); j++) {
@@ -39,7 +39,6 @@ public class Hilo implements Runnable {
 			terminarVuelta();
 		}
 		System.out.println("Terminando de correr hilo " + Thread.currentThread().getName());
-//		gestor.verMarcado();
 		gestorPiezas.verProduccion();
 	}
 	
@@ -47,7 +46,7 @@ public class Hilo implements Runnable {
 	private void terminarVuelta(){
 		
 		if(tipoPieza >= 0){
-			cantPiezas++;
+//			cantPiezas++;
 //			System.out.println(Thread.currentThread().getName() + " produje " + cantPiezas + " del tipo " + tipoPieza);
 			gestorPiezas.contarPieza(tipoPieza);
 		}
