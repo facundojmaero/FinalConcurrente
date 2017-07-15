@@ -46,8 +46,8 @@ public class Hilo implements Runnable {
 	private void terminarVuelta(){
 		
 		if(tipoPieza >= 0){
-			cantPiezas++;
-			System.out.println(Thread.currentThread().getName() + " produje " + cantPiezas + " del tipo " + tipoPieza);
+//			cantPiezas++;
+//			System.out.println(Thread.currentThread().getName() + " produje " + cantPiezas + " del tipo " + tipoPieza);
 			gestorPiezas.contarPieza(tipoPieza);
 		}
 	}

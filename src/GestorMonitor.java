@@ -133,10 +133,10 @@ public class GestorMonitor {
 			}
 		}
 		
-//		System.out.println(t + " salgo del monitor [" + entrada_monitor.availablePermits() + "]");
+		System.out.println(t + " salgo del monitor [" + entrada_monitor.availablePermits() + "]");
 		entrada_monitor.release();
-//		System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
-//		System.out.println("USANDO ULTIMO RETURN " + t);
+		System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
+		System.out.println("USANDO ULTIMO RETURN " + t);
 		return 0;
 	}
 
