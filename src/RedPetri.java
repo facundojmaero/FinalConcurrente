@@ -13,7 +13,7 @@ public class RedPetri {
 	int[][] invariantes;
 	int[] resultadoInvariantes;
 	
-	Tiempo tiempo;
+	private Tiempo tiempo;
 	Semaphore entradaMonitor;
 	
 	public RedPetri(int transiciones, int I[][], int M[], Semaphore entradaMonitor, int[][] invariantes, int[] resultadoInvariantes, int[] tiempos){
@@ -210,5 +210,10 @@ public class RedPetri {
 		}
 		return newSensibilizadas;
 	}
+
+	public long getTimeSleep(int transicion){
+		return tiempo.getTimeSleep(transicion);
+	}
 }
+
 

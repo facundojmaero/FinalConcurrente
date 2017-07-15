@@ -8,34 +8,43 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		String fileMatrizI = "red_tp.txt";
-		String fileMarcado = "marcado_tp.txt";
-		String fileInvariantes = "invariantes_tp.txt";
-		String fileTransiciones = "transicionesHilos_tp.txt";
-		String fileTiempos = "tiempos_tp.txt";
+		String fileMatrizI = "data/red_tp.txt";
+		String fileMarcado = "data/marcado_tp.txt";
+		String fileInvariantes = "data/invariantes_tp.txt";
+		String fileTransiciones = "data/transicionesHilos_tp.txt";
+		String fileTiempos = "data/tiempos_tp.txt";
+		String fileTipoPieza = "data/hiloPieza_tp.txt";
 
 		int[][] I = readMatrix(fileMatrizI);
 		int[] M = readVector(fileMarcado);
 		int[][] invariantes = readMatrix(fileInvariantes);
 		int[] resultadoInvariantes = generarEcuacionesInvariantes(invariantes, M);
 		int[][] transicionesHilos = readMatrix(fileTransiciones);
-		int[] tiempos = readVector(fileTiempos);
+		int[][] hiloPieza = readMatrix(fileTipoPieza);
+		
+		
+		int[] tiempos;
+		try {
+			tiempos = readVector(fileTiempos);
+		} catch (Exception e) {
+			tiempos = new int[I[0].length];
+		}
+		
 		
 		int nroHilos = transicionesHilos.length;
 		
 		Hilo[] threadArray = new Hilo[nroHilos];
 		GestorMonitor monitor = new GestorMonitor(I, M, invariantes, resultadoInvariantes, tiempos);
-		GestorPiezas gestorPiezas = new GestorPiezas(3);
+		GestorPiezas gestorPiezas = new GestorPiezas(hiloPieza[0][0]);
 		
 		for (int i = 0; i < nroHilos; i++) {
 			MyLinkedList<Integer> listaTransiciones = new MyLinkedList<Integer>();
-			int j;
-			for (j = 0; j < transicionesHilos[i].length -1 ; j++) {
+			for (int j = 0; j < transicionesHilos[i].length; j++) {
 				listaTransiciones.add(transicionesHilos[i][j]);
 			}
 			threadArray[i] = new Hilo(listaTransiciones, monitor, gestorPiezas);
 			
-			threadArray[i].setTipoPieza(transicionesHilos[i][j]);
+			threadArray[i].setTipoPieza(hiloPieza[1][i]);
 			
 			Thread thread = new Thread(threadArray[i]);
 			thread.start();
@@ -109,7 +118,6 @@ public class Main {
 			line.add(colReader.nextInt());
 		}
 		colReader.close();
-
 		return line;
 	}
 

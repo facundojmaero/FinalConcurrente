@@ -5,7 +5,7 @@ public class Hilo implements Runnable {
 	GestorMonitor gestorMonitor;
 	int transicionActual;
 	List<Integer> transiciones = new MyLinkedList<Integer>();
-	int tipoPieza;
+	int tipoPieza = -1;
 	GestorPiezas gestorPiezas;
 	int cantPiezas;
 	
@@ -46,8 +46,8 @@ public class Hilo implements Runnable {
 	private void terminarVuelta(){
 		
 		if(tipoPieza >= 0){
-//			cantPiezas++;
-//			System.out.println(Thread.currentThread().getName() + " produje " + cantPiezas + " del tipo " + tipoPieza);
+			cantPiezas++;
+			System.out.println(Thread.currentThread().getName() + " produje " + cantPiezas + " del tipo " + tipoPieza);
 			gestorPiezas.contarPieza(tipoPieza);
 		}
 	}

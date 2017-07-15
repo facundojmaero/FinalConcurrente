@@ -71,7 +71,7 @@ public class GestorMonitor {
 
 					// A falta de politica despierto a los hilos de la primera
 					// transicion disponible
-					int indiceDespertar = listasParaDisparar.indexOf(1);
+					int indiceDespertar = listasParaDisparar.lastIndexOf(1);
 	
 					// Despierto a un hilo que esta esperando por esa transicion
 					colas[indiceDespertar].release();
@@ -106,7 +106,7 @@ public class GestorMonitor {
 //				System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
 				
 				try {
-					Thread.sleep(red.tiempo.getTimeSleep(transicion));
+					Thread.sleep(red.getTimeSleep(transicion));
 				} catch (InterruptedException e) {
 					System.out.print("Error hilo esperando alfa");
 					e.printStackTrace();
