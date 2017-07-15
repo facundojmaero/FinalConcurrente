@@ -11,6 +11,7 @@ public class GestorMonitor {
 	private MySemaphore colas[];
 	private List<Integer> sensibilizadas = new ArrayList<Integer>();
 	private List<Integer> quienesEnCola = new ArrayList<Integer>();
+	private Politicas politicas = null;
 	
 	private List<String> log = new ArrayList<String>();
 
@@ -71,7 +72,15 @@ public class GestorMonitor {
 
 					// A falta de politica despierto a los hilos de la primera
 					// transicion disponible
-					int indiceDespertar = listasParaDisparar.lastIndexOf(1);
+
+					int indiceDespertar;
+					
+					if(politicas == null){
+						indiceDespertar = listasParaDisparar.lastIndexOf(1);
+					}
+					else{
+						indiceDespertar = politicas.cual(listasParaDisparar);
+					}
 	
 					// Despierto a un hilo que esta esperando por esa transicion
 					colas[indiceDespertar].release();
@@ -190,5 +199,8 @@ public class GestorMonitor {
 	private boolean checkLog(){
 		return true;
 	}
+	
+	public void setPoliticas(Politicas newPoliticas) { politicas = newPoliticas; }
+	public Politicas getPoliticas() { return politicas; }
 	
 }
