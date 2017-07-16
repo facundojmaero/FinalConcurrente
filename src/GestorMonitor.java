@@ -75,12 +75,12 @@ public class GestorMonitor {
 
 					int indiceDespertar;
 					
-					if(politicas == null){
-						indiceDespertar = listasParaDisparar.lastIndexOf(1);
-					}
-					else{
+//					if(politicas == null){
+//						indiceDespertar = listasParaDisparar.indexOf(1);
+//					}
+//					else{
 						indiceDespertar = politicas.cual(listasParaDisparar);
-					}
+//					}
 	
 					// Despierto a un hilo que esta esperando por esa transicion
 					colas[indiceDespertar].release();
@@ -110,7 +110,7 @@ public class GestorMonitor {
 
 			} else if (k == -1){
 				
-//				System.out.println(t + " Antes del alfa, durmiendo " + red.tiempo.getTimeSleep(transicion) + " ms [" + entrada_monitor.availablePermits() + "]");
+//				System.out.println(t + " Antes del alfa, durmiendo " + red.getTimeSleep(transicion) + " ms [" + entrada_monitor.availablePermits() + "]");
 				entrada_monitor.release();
 //				System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
 				
@@ -137,15 +137,15 @@ public class GestorMonitor {
 				colas[transicion].acquire();
 			}
 			else{
-				System.out.println("K TIENE UN VALOR NO VALIDO---------------------- = " + k + " " + t);
+//				System.out.println("K TIENE UN VALOR NO VALIDO---------------------- = " + k + " " + t);
 				System.exit(-1);
 			}
 		}
 		
-		System.out.println(t + " salgo del monitor [" + entrada_monitor.availablePermits() + "]");
+//		System.out.println(t + " salgo del monitor [" + entrada_monitor.availablePermits() + "]");
 		entrada_monitor.release();
-		System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
-		System.out.println("USANDO ULTIMO RETURN " + t);
+//		System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
+//		System.out.println("USANDO ULTIMO RETURN " + t);
 		return 0;
 	}
 

@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -14,6 +15,7 @@ public class Main {
 		String fileTransiciones = "data/transicionesHilos_tp.txt";
 		String fileTiempos = "data/tiempos_tp.txt";
 		String fileTipoPieza = "data/hiloPieza_tp.txt";
+		String fileTransicionesPolitica = "data/transicionesPorPieza_tp.txt";
 
 		int[][] I = readMatrix(fileMatrizI);
 		int[] M = readVector(fileMarcado);
@@ -22,7 +24,6 @@ public class Main {
 		int[][] transicionesHilos = readMatrix(fileTransiciones);
 		int[][] hiloPieza = readMatrix(fileTipoPieza);
 		
-		
 		int[] tiempos;
 		try {
 			tiempos = readVector(fileTiempos);
@@ -30,12 +31,35 @@ public class Main {
 			tiempos = new int[I[0].length];
 		}
 		
-		
 		int nroHilos = transicionesHilos.length;
 		
 		Hilo[] threadArray = new Hilo[nroHilos];
 		GestorMonitor monitor = new GestorMonitor(I, M, invariantes, resultadoInvariantes, tiempos);
 		GestorPiezas gestorPiezas = new GestorPiezas(hiloPieza[0][0]);
+		
+		Politicas politicas = new Politicas(hiloPieza[0][0]);
+		
+		
+		ArrayList<ArrayList<Integer>> matrizPrioridades = new ArrayList<ArrayList<Integer>>();
+		Scanner input = null;
+		try {
+			input = new Scanner(new File(fileTransicionesPolitica));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		while (input.hasNextLine()) {
+			ArrayList<Integer> line = readLine(input.nextLine());
+			matrizPrioridades.add(line);
+		}
+		input.close();
+		
+		politicas.setMatrizTransiciones(matrizPrioridades);
+		
+		
+		
+		
+		monitor.setPoliticas(politicas);
+		gestorPiezas.setPolitica(politicas);
 		
 		for (int i = 0; i < nroHilos; i++) {
 			MyLinkedList<Integer> listaTransiciones = new MyLinkedList<Integer>();
@@ -47,8 +71,10 @@ public class Main {
 			threadArray[i].setTipoPieza(hiloPieza[1][i]);
 			
 			Thread thread = new Thread(threadArray[i]);
+			
 			thread.start();
 		}
+		
 		
 //		threadArray[0].setTipoPieza(0);
 //		threadArray[1].setTipoPieza(1);
