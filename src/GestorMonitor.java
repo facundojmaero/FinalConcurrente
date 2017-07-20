@@ -33,10 +33,8 @@ public class GestorMonitor {
 		String t = Thread.currentThread().getName();
 		
 		try {
-//			System.out.println(t + " {{" + entrada_monitor.availablePermits() + "}} b4");
 			entrada_monitor. acquire();
 //			System.out.println(t + " obtuve la entrada al monitor");
-//			System.out.println(t + " {{" + entrada_monitor.availablePermits() + "}}");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -64,8 +62,6 @@ public class GestorMonitor {
 				actualizarQuienesEnCola();
 
 				List<Integer> listasParaDisparar = andVectores(sensibilizadas, quienesEnCola);
-//				System.out.println(t + " sensi: " + sensibilizadas);
-//				System.out.println(t + " colas: " + quienesEnCola);
 				// Aca hay que hacer el and de sensibilizidas y listas para disparar
 
 				if (listasParaDisparar.contains(1)) {
@@ -94,7 +90,6 @@ public class GestorMonitor {
 					// Salgo del while
 //					System.out.println(t + " salgo del monitor sin despertar a nadie [" + entrada_monitor.availablePermits() + "]");
 					entrada_monitor.release();
-//					System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
 					
 					return 0;
 				}
@@ -102,9 +97,7 @@ public class GestorMonitor {
 //				System.out.println(t + " transicion " + transicion + " no sensibilizada, me voy a la cola");
 				
 				// No dispare por no estar sensibilizada
-//				System.out.println(t + " salgo del monitor y me pongo a esperar en una cola [" + entrada_monitor.availablePermits() + "]");
 				entrada_monitor.release();
-//				System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
 //				k = 1;
 				colas[transicion].acquire();
 
@@ -112,7 +105,6 @@ public class GestorMonitor {
 				
 //				System.out.println(t + " Antes del alfa, durmiendo " + red.getTimeSleep(transicion) + " ms [" + entrada_monitor.availablePermits() + "]");
 				entrada_monitor.release();
-//				System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
 				
 				try {
 					Thread.sleep(red.getTimeSleep(transicion));
@@ -146,7 +138,7 @@ public class GestorMonitor {
 		entrada_monitor.release();
 //		System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
 //		System.out.println("USANDO ULTIMO RETURN " + t);
-		return 0;
+		return 1;
 	}
 
 	private void actualizarQuienesEnCola() {

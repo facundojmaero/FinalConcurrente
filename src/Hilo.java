@@ -21,14 +21,16 @@ public class Hilo implements Runnable {
 	@Override
 	public void run() {
 		
-//		for (int i = 0; i < 100; i++) {
-		while(true){
-			
-			for (int j = 0; j < transiciones.size(); j++) {
+		for (int i = 0; i < 100; i++) {
+//		while(true){
+			int j = 0;
+//			for (int j = 0; j < transiciones.size(); j++) {
+			while(j<transiciones.size()){
 				
 				if (gestorMonitor.dispararTransicion(transicionActual) == 0) {
 					// la transicion se disparo, avanzo a la siguiente
 					
+					j++;
 					int transicionActualAux = transicionActual;
 					siguienteTransicion();
 					
@@ -38,8 +40,8 @@ public class Hilo implements Runnable {
 			
 			terminarVuelta();
 		}
-//		System.out.println("Terminando de correr hilo " + Thread.currentThread().getName());
-//		gestorPiezas.verProduccion();
+		System.out.println("Terminando de correr hilo " + Thread.currentThread().getName());
+		gestorPiezas.verProduccion();
 	}
 	
 	

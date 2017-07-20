@@ -21,8 +21,8 @@ public class Tiempo {
 			beta[i] = 100000;
 		}
 		
-		setNuevoTimeStamp(sensibilizadas_iniciales);
 		esperando = new int[sensibilizadas_iniciales.size()];
+		setNuevoTimeStamp(sensibilizadas_iniciales);
 	}
 
 	public int testVentanaTiempo(int transicion) {
@@ -59,7 +59,8 @@ public class Tiempo {
 		
 		for (int i = 0; i < newSensibilizadas.size(); i++) {
 			// Si es una nueva transicion sensibilizada
-			if (newSensibilizadas.get(i) == 1) {
+			
+			if (newSensibilizadas.get(i) == 1 && alguienEsperando(i) == false) {
 				transicionesConTiempo.set(i, (System.currentTimeMillis()));
 			}
 		}
