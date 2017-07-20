@@ -13,6 +13,10 @@ public class Politicas {
 		for (int i = 0; i < nroPiezas; i++) {
 			prioridades[i] = i;
 		} 
+		
+//		prioridades[0] = 2;
+//		prioridades[1] = 1;
+//		prioridades[2] = 0;
 	}
 	
 	public int cual(List<Integer> transiciones){
@@ -29,11 +33,13 @@ public class Politicas {
 		
 //		System.out.println(transiciones);
 		
+		List<List<Integer>> vectorOpciones = new ArrayList<List<Integer>>();
+		
 		for (int i = 0; i < prioridades.length; i++) {
-			List<Integer> vectorOpciones = andVectores(transiciones, matrizTransiciones.get(prioridades[i]));
+			vectorOpciones.add(andVectores(transiciones, matrizTransiciones.get(prioridades[i])));
 			
-			if(vectorOpciones.contains(1)){
-				return vectorOpciones.indexOf(1);
+			if(vectorOpciones.get(i).contains(1)){
+				return vectorOpciones.get(i).indexOf(1);
 			}
 		}
 		

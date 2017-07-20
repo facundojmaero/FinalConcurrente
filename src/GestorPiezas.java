@@ -6,6 +6,7 @@ public class GestorPiezas {
 	private int[] proporcionesProduccion;
 	private int[] prioridades;
 	private Politicas politica;
+	private MyEntradaMonitor entradaMonitor;
 
 	public GestorPiezas(int numeroPiezas){
 		
@@ -17,9 +18,12 @@ public class GestorPiezas {
 		prioridades = new int[numeroPiezas];
 		
 		for (int i = 0; i < numeroPiezas; i++) {
-			proporcionesProduccion[i] = 1;
+//			proporcionesProduccion[i] = 1;
 			prioridades[i] = i;
 		} 
+		proporcionesProduccion[0] = 1;
+		proporcionesProduccion[1] = 1;
+		proporcionesProduccion[2] = 1;
 	}
 	
 	public synchronized void contarPieza(int tipoPieza){
@@ -37,11 +41,12 @@ public class GestorPiezas {
 		
 		if(politica != null){
 			politica.setPrioridades(prioridades);
-//			System.out.print("Nuevas prioridades: ");
-//			for (int i = 0; i < piezasTerminadas.length; i++) {
-//				System.out.print(prioridades[i] + " ");
-//			}
-//			System.out.println();
+			entradaMonitor.setPrioridades(prioridades);
+			System.out.print("Nuevas prioridades: ");
+			for (int i = 0; i < piezasTerminadas.length; i++) {
+				System.out.print(prioridades[i] + " ");
+			}
+			System.out.println();
 		}
 		
 	}
@@ -93,8 +98,9 @@ public class GestorPiezas {
 	public void setProporciones(int[] newPolitica) {proporcionesProduccion = newPolitica; }
 	
 	public Politicas getPolitica() { return politica; }
-
 	public void setPolitica(Politicas politica) { this.politica = politica; }
+	
+	public void setEntradaMonitor(MyEntradaMonitor newEntradaMonitor) { entradaMonitor = newEntradaMonitor; }
 	
 	private ArrayList<Double> normalizarProduccion(){
 		

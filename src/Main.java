@@ -34,7 +34,7 @@ public class Main {
 		int nroHilos = transicionesHilos.length;
 		
 		Hilo[] threadArray = new Hilo[nroHilos];
-		GestorMonitor monitor = new GestorMonitor(I, M, invariantes, resultadoInvariantes, tiempos);
+		GestorMonitor monitor = new GestorMonitor(I, M, invariantes, resultadoInvariantes, tiempos, hiloPieza[0][0]);
 		GestorPiezas gestorPiezas = new GestorPiezas(hiloPieza[0][0]);
 		
 		Politicas politicas = new Politicas(hiloPieza[0][0]);
@@ -55,8 +55,8 @@ public class Main {
 		
 		politicas.setMatrizTransiciones(matrizPrioridades);
 		
-		
-		
+		monitor.getSemaforoEntrada().setMatrizTransiciones(matrizPrioridades);
+		gestorPiezas.setEntradaMonitor(monitor.getSemaforoEntrada());
 		
 		monitor.setPoliticas(politicas);
 		gestorPiezas.setPolitica(politicas);

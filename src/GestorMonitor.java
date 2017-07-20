@@ -5,7 +5,10 @@ import java.util.List;
 
 public class GestorMonitor {
 
-	final Semaphore entrada_monitor = new Semaphore(1, true);
+//	final Semaphore entrada_monitor = new Semaphore(1, true);
+	
+	public MyEntradaMonitor entrada_monitor;
+	
 	private int k;
 	private RedPetri red;
 	private MySemaphore colas[];
@@ -15,8 +18,11 @@ public class GestorMonitor {
 	
 	private List<String> log = new ArrayList<String>();
 
-	public GestorMonitor(int I[][], int[] M, int[][] invariantes, int[] resultadoInvariantes, int[] tiempos) {
+	public GestorMonitor(int I[][], int[] M, int[][] invariantes, int[] resultadoInvariantes, int[] tiempos, int nroPiezas) {
 
+		
+		entrada_monitor = new MyEntradaMonitor(nroPiezas, countTransitions(I));
+		
 		red = new RedPetri(countTransitions(I), I, M, entrada_monitor, invariantes, resultadoInvariantes, tiempos);
 		colas = new MySemaphore[countTransitions(I)];
 		for (int i = 0; i < countTransitions(I); i++) {
@@ -32,12 +38,9 @@ public class GestorMonitor {
 		
 		String t = Thread.currentThread().getName();
 		
-		try {
-			entrada_monitor. acquire();
-//			System.out.println(t + " obtuve la entrada al monitor");
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+//		System.out.println(t + " tratando de entrar al monitor");
+		entrada_monitor.acquire(transicion);
+//		System.out.println(t + " obtuve la entrada al monitor");
 		k = 1;
 		while (k == 1) {
 			k = red.disparar(transicion);
@@ -66,9 +69,6 @@ public class GestorMonitor {
 
 				if (listasParaDisparar.contains(1)) {
 
-					// A falta de politica despierto a los hilos de la primera
-					// transicion disponible
-
 					int indiceDespertar;
 					
 //					if(politicas == null){
@@ -88,7 +88,7 @@ public class GestorMonitor {
 				} else {
 //					k = 0;
 					// Salgo del while
-//					System.out.println(t + " salgo del monitor sin despertar a nadie [" + entrada_monitor.availablePermits() + "]");
+//					System.out.println(t + " salgo del monitor sin despertar a nadie");
 					entrada_monitor.release();
 					
 					return 0;
@@ -102,8 +102,8 @@ public class GestorMonitor {
 				colas[transicion].acquire();
 
 			} else if (k == -1){
-				
-//				System.out.println(t + " Antes del alfa, durmiendo " + red.getTimeSleep(transicion) + " ms [" + entrada_monitor.availablePermits() + "]");
+//				
+//				System.out.println(t + " Antes del alfa, durmiendo " + red.getTimeSleep(transicion) + " ms");
 				entrada_monitor.release();
 				
 				try {
@@ -194,5 +194,7 @@ public class GestorMonitor {
 	
 	public void setPoliticas(Politicas newPoliticas) { politicas = newPoliticas; }
 	public Politicas getPoliticas() { return politicas; }
+	
+	public MyEntradaMonitor getSemaforoEntrada(){ return entrada_monitor;}
 	
 }
