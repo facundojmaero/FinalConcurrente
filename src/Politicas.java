@@ -21,30 +21,27 @@ public class Politicas {
 	
 	public int cual(List<Integer> transiciones){
 		
-		
 		int cant = 0;
 		for (int i = 0; i < transiciones.size(); i++) {
 			if(transiciones.get(i) == 1)
 				cant++;
 		}
-		if(cant >1){
-//			System.out.println(transiciones);
+		if(cant == 1){
+			return transiciones.indexOf(1);
 		}
 		
-//		System.out.println(transiciones);
-		
-		List<List<Integer>> vectorOpciones = new ArrayList<List<Integer>>();
+		List<Integer> vectorOpciones = new ArrayList<Integer>();
 		
 		for (int i = 0; i < prioridades.length; i++) {
-			vectorOpciones.add(andVectores(transiciones, matrizTransiciones.get(prioridades[i])));
+			vectorOpciones = andVectores(transiciones, matrizTransiciones.get(prioridades[i]));
 			
-			if(vectorOpciones.get(i).contains(1)){
-				return vectorOpciones.get(i).indexOf(1);
+			if(vectorOpciones.contains(1)){
+				return vectorOpciones.indexOf(1);
 			}
 		}
 		
 		System.out.println("Error en politicas");
-		return transiciones.indexOf(1);
+		return transiciones.lastIndexOf(1);
 	}
 	
 	private List<Integer> andVectores(List<Integer> vector1, List<Integer> vector2) {

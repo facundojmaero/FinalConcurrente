@@ -18,11 +18,15 @@ public class GestorPiezas {
 		prioridades = new int[numeroPiezas];
 		
 		for (int i = 0; i < numeroPiezas; i++) {
-//			proporcionesProduccion[i] = 1;
+			proporcionesProduccion[i] = 1;
 			prioridades[i] = i;
 		} 
-		proporcionesProduccion[0] = 1;
-		proporcionesProduccion[1] = 1;
+//		proporcionesProduccion[0] = 2;
+//		proporcionesProduccion[1] = 1;
+//		proporcionesProduccion[2] = 1;
+		
+		proporcionesProduccion[0] = 2;
+		proporcionesProduccion[1] = 3;
 		proporcionesProduccion[2] = 1;
 	}
 	
@@ -35,33 +39,25 @@ public class GestorPiezas {
 		produccionNormalizada = dividirPorPromedio(produccionNormalizada, promedio);
 		
 		printArray(produccionNormalizada);
-//		produccionNormalizada.sort(null);
 		
 		prioridades = ordenarPrioridades(produccionNormalizada);
 		
 		if(politica != null){
 			politica.setPrioridades(prioridades);
 			entradaMonitor.setPrioridades(prioridades);
-			System.out.print("Nuevas prioridades: ");
-			for (int i = 0; i < piezasTerminadas.length; i++) {
-				System.out.print(prioridades[i] + " ");
-			}
-			System.out.println();
+//			System.out.print("Nuevas prioridades: ");
+//			for (int i = 0; i < piezasTerminadas.length; i++) {
+//				System.out.print(prioridades[i] + " ");
+//			}
+//			System.out.println();
 		}
 		
-	}
-	
-	private void verPiezasTerminadas(){
-		for (int i = 0; i < piezasTerminadas.length; i++) {
-			System.out.print(piezasTerminadas[i] + " ");
-		}
-		System.out.println();
 	}
 	
 	private int[] ordenarPrioridades(ArrayList<Double> array){
 		int[] prioridades = new int[array.size()];
 		
-		ArrayList<Double> arrayCopia = (ArrayList<Double>) array.clone();
+		ArrayList<Double> arrayCopia = new ArrayList<Double>(array);
 		arrayCopia.sort(null);
 		
 		for (int i = 0; i < prioridades.length; i++) {

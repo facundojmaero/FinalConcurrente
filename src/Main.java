@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -13,7 +12,7 @@ public class Main {
 		String fileMarcado = "data/marcado_tp.txt";
 		String fileInvariantes = "data/invariantes_tp.txt";
 		String fileTransiciones = "data/transicionesHilos_tp.txt";
-		String fileTiempos = "data/tiempos_tp.txt";
+		String fileTiempos = "data/tiemposs_tp.txt";
 		String fileTipoPieza = "data/hiloPieza_tp.txt";
 		String fileTransicionesPolitica = "data/transicionesPorPieza_tp.txt";
 
@@ -71,7 +70,8 @@ public class Main {
 			threadArray[i].setTipoPieza(hiloPieza[1][i]);
 			
 			Thread thread = new Thread(threadArray[i]);
-			
+
+//			if(i==2) continue;
 			thread.start();
 		}
 		

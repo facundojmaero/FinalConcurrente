@@ -3,24 +3,20 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 
 public class MyEntradaMonitor {
-	
-	private boolean taken;
+
 	private int[] prioridades;
 	private List<ArrayList<Integer>> matrizTransiciones;
 	private MySemaphore[] colasDeEntrada;
+	private Semaphore semaforo;
 
 	public MyEntradaMonitor(int nroPiezas, int nroTransiciones){
 		
-		taken = false;
 		prioridades = new int[nroPiezas];
+		semaforo = new Semaphore(1,true);
 		
 		for (int i = 0; i < nroPiezas; i++) {
 			prioridades[i] = i;
 		}
-		
-//		prioridades[0] = 2;
-//		prioridades[1] = 1;
-//		prioridades[2] = 0;
 		
 		colasDeEntrada = new MySemaphore[nroTransiciones];
 		for (int i = 0; i < colasDeEntrada.length; i++) {
@@ -30,11 +26,8 @@ public class MyEntradaMonitor {
 	
 	public void acquire(int t){
 		
-		if(taken){
+		if(semaforo.tryAcquire() == false){
 			colasDeEntrada[t].acquire();
-		}
-		else{
-			taken = true;
 		}
 		
 	}
@@ -44,12 +37,16 @@ public class MyEntradaMonitor {
 		int hilosEsperando = getQueueLength();
 		
 		if(hilosEsperando == 0){
-			taken = false;
+			semaforo.release();
 //			System.out.println(Thread.currentThread().getName() + " release sin otros hilos en cola");
 		}
 		else{
 			int hiloParaDespertar = cual();
 //			System.out.println(Thread.currentThread().getName() + " voy a dejar entrar al hilo en transicion " + hiloParaDespertar);
+			
+			if(hiloParaDespertar == -1){
+				return;
+			}
 			colasDeEntrada[hiloParaDespertar].release();
 		}
 		
@@ -71,32 +68,32 @@ public class MyEntradaMonitor {
 	
 	private int cual(){
 		
-		
 		List<Integer> transiciones = getVectorHilos();
 		
-		int a = 0, b = 0;
+		int cant = 0;
 		for (int i = 0; i < transiciones.size(); i++) {
 			if(transiciones.get(i) == 1){
-				a++;
+				cant++;
 			}
 		}
 		
-		if(a>1){
-			b = 1;
+		if(cant==1){
+			return transiciones.lastIndexOf(1);
 		}
 		
-		List<List<Integer>> vectorOpciones = new ArrayList<List<Integer>>();
+		List<Integer> vectorOpciones = new ArrayList<Integer>();
 		
 		for (int i = 0; i < prioridades.length; i++) {
-			vectorOpciones.add(andVectores(transiciones, matrizTransiciones.get(prioridades[i])));
+			vectorOpciones = andVectores(transiciones, matrizTransiciones.get(prioridades[i]));
 			
-			if(vectorOpciones.get(i).contains(1)){
-				return vectorOpciones.get(i).indexOf(1);
+			if(vectorOpciones.indexOf(1) != -1){
+				return vectorOpciones.lastIndexOf(1);
 			}
 		}
 		
-		System.out.println("Error en politicas de entrada");
-		return transiciones.indexOf(1);
+//		System.out.println("Error en politicas de entrada");
+		
+		return transiciones.lastIndexOf(1);
 	}
 	
 	private List<Integer> andVectores(List<Integer> vector1, List<Integer> vector2) {

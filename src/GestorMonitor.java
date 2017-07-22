@@ -11,7 +11,8 @@ public class GestorMonitor {
 	
 	private int k;
 	private RedPetri red;
-	private MySemaphore colas[];
+//	private MySemaphore colas[];
+	private Semaphore colas[];
 	private List<Integer> sensibilizadas = new ArrayList<Integer>();
 	private List<Integer> quienesEnCola = new ArrayList<Integer>();
 	private Politicas politicas = null;
@@ -24,9 +25,11 @@ public class GestorMonitor {
 		entrada_monitor = new MyEntradaMonitor(nroPiezas, countTransitions(I));
 		
 		red = new RedPetri(countTransitions(I), I, M, entrada_monitor, invariantes, resultadoInvariantes, tiempos);
-		colas = new MySemaphore[countTransitions(I)];
+//		colas = new MySemaphore[countTransitions(I)];
+		colas = new Semaphore[countTransitions(I)];
 		for (int i = 0; i < countTransitions(I); i++) {
-			colas[i] = new MySemaphore();
+//			colas[i] = new MySemaphore();
+			colas[i] = new Semaphore(0);
 		}
 		for (int i = 0; i < countTransitions(I); i++) {
 			quienesEnCola.add(0);
@@ -38,13 +41,12 @@ public class GestorMonitor {
 		
 		String t = Thread.currentThread().getName();
 		
-//		System.out.println(t + " tratando de entrar al monitor");
 		entrada_monitor.acquire(transicion);
-//		System.out.println(t + " obtuve la entrada al monitor");
+		System.out.println(t + " obtuve la entrada al monitor");
 		k = 1;
 		while (k == 1) {
 			k = red.disparar(transicion);
-//			System.out.println(Thread.currentThread().getName() + " Intentando disparar transicion " + transicion + " k = " + k);
+			System.out.println(Thread.currentThread().getName() + " Intentando disparar transicion " + transicion + " k = " + k);
 			
 			if (k == 1) {
 			
@@ -57,52 +59,52 @@ public class GestorMonitor {
 				 }
 				
 				// Dispare una transicion correctamente
-//				System.out.println("         " + t + " Dispare transicion " + transicion + ", k = " + k);
-				
+				System.out.println("         " + t + " Dispare transicion " + transicion + ", k = " + k);
+								
 				sensibilizadas = red.get_sensibilizadas();
-
+				
 				// Actualizo quienes estan en la cola
-				actualizarQuienesEnCola();
-
+//				actualizarQuienesEnCola();
+				
 				List<Integer> listasParaDisparar = andVectores(sensibilizadas, quienesEnCola);
 				// Aca hay que hacer el and de sensibilizidas y listas para disparar
-
+				
 				if (listasParaDisparar.contains(1)) {
-
-					int indiceDespertar;
 					
-//					if(politicas == null){
-//						indiceDespertar = listasParaDisparar.indexOf(1);
-//					}
-//					else{
-						indiceDespertar = politicas.cual(listasParaDisparar);
-//					}
-	
+					int indiceDespertar = politicas.cual(listasParaDisparar);
+					
 					// Despierto a un hilo que esta esperando por esa transicion
 					colas[indiceDespertar].release();
 					
-//					System.out.println(t + " desperte al hilo en transicion " + indiceDespertar);
+					System.out.println(t + " desperte al hilo en transicion " + indiceDespertar);
 					
 					return 0;
 
 				} else {
-//					k = 0;
+					
 					// Salgo del while
-//					System.out.println(t + " salgo del monitor sin despertar a nadie");
+					System.out.println(t + " salgo del monitor sin despertar a nadie");
 					entrada_monitor.release();
 					
 					return 0;
 				}
 			} else if (k == -3) {
+				
 //				System.out.println(t + " transicion " + transicion + " no sensibilizada, me voy a la cola");
 				
+				quienesEnCola.set(transicion, 1);
 				// No dispare por no estar sensibilizada
 				entrada_monitor.release();
-//				k = 1;
-				colas[transicion].acquire();
+				try {
+					colas[transicion].acquire();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				quienesEnCola.set(transicion, 0);
 
 			} else if (k == -1){
-//				
+				
 //				System.out.println(t + " Antes del alfa, durmiendo " + red.getTimeSleep(transicion) + " ms");
 				entrada_monitor.release();
 				
@@ -126,7 +128,12 @@ public class GestorMonitor {
 //				k = 1;
 				entrada_monitor.release();
 //				System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
-				colas[transicion].acquire();
+				try {
+					colas[transicion].acquire();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			else{
 //				System.out.println("K TIENE UN VALOR NO VALIDO---------------------- = " + k + " " + t);
@@ -148,9 +155,10 @@ public class GestorMonitor {
 			
 //			int cantidad_hilos_cola = colas[i].getQueueLength();
 //			boolean hay_hilos_cola = colas[i].hasQueuedThreads();
-			boolean hay_hilos_cola = colas[i].isTaken();
+//			boolean hay_hilos_cola = colas[i].isTaken();
 			
-			if (hay_hilos_cola) {
+//			if (colas[i].isTaken()) {
+			if(colas[i].hasQueuedThreads()){
 				quienesEnCola.set(i, 1);
 			} else {
 				quienesEnCola.set(i, 0);

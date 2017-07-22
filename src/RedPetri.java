@@ -14,6 +14,7 @@ public class RedPetri {
 	int[] resultadoInvariantes;
 	
 	private Tiempo tiempo;
+//	Semaphore entradaMonitor;
 	MyEntradaMonitor entradaMonitor;
 	
 	public RedPetri(int transiciones, int I[][], int M[], MyEntradaMonitor entrada_monitor, int[][] invariantes, int[] resultadoInvariantes, int[] tiempos){

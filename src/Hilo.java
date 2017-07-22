@@ -21,7 +21,7 @@ public class Hilo implements Runnable {
 	@Override
 	public void run() {
 		
-		for (int i = 0; i < 100; i++) {
+		for (int i = 0; i < 600; i++) {
 //		while(true){
 			int j = 0;
 //			for (int j = 0; j < transiciones.size(); j++) {
@@ -34,7 +34,7 @@ public class Hilo implements Runnable {
 					int transicionActualAux = transicionActual;
 					siguienteTransicion();
 					
-					gestorMonitor.writeToLog(transicionActualAux + " " + transicionActual + " " + Thread.currentThread().getName());
+//					gestorMonitor.writeToLog(transicionActualAux + " " + transicionActual + " " + Thread.currentThread().getName());
 				}
 			}
 			
