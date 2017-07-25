@@ -11,7 +11,6 @@ public class GestorMonitor {
 	
 	private int k;
 	private RedPetri red;
-//	private MySemaphore colas[];
 	private Semaphore colas[];
 	private List<Integer> sensibilizadas = new ArrayList<Integer>();
 	private List<Integer> quienesEnCola = new ArrayList<Integer>();
@@ -25,10 +24,8 @@ public class GestorMonitor {
 		entrada_monitor = new MyEntradaMonitor(nroPiezas, countTransitions(I));
 		
 		red = new RedPetri(countTransitions(I), I, M, entrada_monitor, invariantes, resultadoInvariantes, tiempos);
-//		colas = new MySemaphore[countTransitions(I)];
 		colas = new Semaphore[countTransitions(I)];
 		for (int i = 0; i < countTransitions(I); i++) {
-//			colas[i] = new MySemaphore();
 			colas[i] = new Semaphore(0);
 		}
 		for (int i = 0; i < countTransitions(I); i++) {
@@ -42,11 +39,11 @@ public class GestorMonitor {
 		String t = Thread.currentThread().getName();
 		
 		entrada_monitor.acquire(transicion);
-		System.out.println(t + " obtuve la entrada al monitor");
+//		System.out.println(t + " obtuve la entrada al monitor");
 		k = 1;
 		while (k == 1) {
 			k = red.disparar(transicion);
-			System.out.println(Thread.currentThread().getName() + " Intentando disparar transicion " + transicion + " k = " + k);
+//			System.out.println(Thread.currentThread().getName() + " Intentando disparar transicion " + transicion + " k = " + k);
 			
 			if (k == 1) {
 			
@@ -59,7 +56,7 @@ public class GestorMonitor {
 				 }
 				
 				// Dispare una transicion correctamente
-				System.out.println("         " + t + " Dispare transicion " + transicion + ", k = " + k);
+//				System.out.println("         " + t + " Dispare transicion " + transicion + ", k = " + k);
 								
 				sensibilizadas = red.get_sensibilizadas();
 				
@@ -76,18 +73,18 @@ public class GestorMonitor {
 					// Despierto a un hilo que esta esperando por esa transicion
 					colas[indiceDespertar].release();
 					
-					System.out.println(t + " desperte al hilo en transicion " + indiceDespertar);
-					
-					return 0;
+//					System.out.println(t + " desperte al hilo en transicion " + indiceDespertar);
 
 				} else {
 					
 					// Salgo del while
-					System.out.println(t + " salgo del monitor sin despertar a nadie");
+//					System.out.println(t + " salgo del monitor sin despertar a nadie");
 					entrada_monitor.release();
 					
-					return 0;
 				}
+				
+				return 0;
+				
 			} else if (k == -3) {
 				
 //				System.out.println(t + " transicion " + transicion + " no sensibilizada, me voy a la cola");
@@ -146,26 +143,6 @@ public class GestorMonitor {
 //		System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
 //		System.out.println("USANDO ULTIMO RETURN " + t);
 		return 1;
-	}
-
-	private void actualizarQuienesEnCola() {
-		for (int i = 0; i < colas.length; i++) {
-			
-			// Lleno quienesEnCola con "1" donde hay hilos esperando y "0" donde no los hay
-			
-//			int cantidad_hilos_cola = colas[i].getQueueLength();
-//			boolean hay_hilos_cola = colas[i].hasQueuedThreads();
-//			boolean hay_hilos_cola = colas[i].isTaken();
-			
-//			if (colas[i].isTaken()) {
-			if(colas[i].hasQueuedThreads()){
-				quienesEnCola.set(i, 1);
-			} else {
-				quienesEnCola.set(i, 0);
-			}
-		}
-		
-		return;
 	}
 
 	private List<Integer> andVectores(List<Integer> sensibilizadas, List<Integer> enCola) {

@@ -38,7 +38,7 @@ public class GestorPiezas {
 		double promedio = calcularPromedio(produccionNormalizada);
 		produccionNormalizada = dividirPorPromedio(produccionNormalizada, promedio);
 		
-		printArray(produccionNormalizada);
+		printArray(produccionNormalizada, piezasTerminadas);
 		
 		prioridades = ordenarPrioridades(produccionNormalizada);
 		
@@ -68,9 +68,15 @@ public class GestorPiezas {
 		return prioridades;
 	}
 	
-	private void printArray(ArrayList<Double> array){
+	private void printArray(ArrayList<Double> array, int[] array2){
 		for (int i = 0; i < array.size(); i++) {
 			System.out.printf("%.2f  ", array.get(i));
+		}
+		
+		System.out.print(" 	");
+		
+		for (int i = 0; i < array2.length; i++) {
+			System.out.printf("%d  ", array2[i]);
 		}
 		System.out.println();
 	}

@@ -13,12 +13,8 @@ public class Politicas {
 		for (int i = 0; i < nroPiezas; i++) {
 			prioridades[i] = i;
 		} 
-		
-//		prioridades[0] = 2;
-//		prioridades[1] = 1;
-//		prioridades[2] = 0;
 	}
-	
+
 	public int cual(List<Integer> transiciones){
 		
 		int cant = 0;
@@ -26,6 +22,7 @@ public class Politicas {
 			if(transiciones.get(i) == 1)
 				cant++;
 		}
+		
 		if(cant == 1){
 			return transiciones.indexOf(1);
 		}
@@ -40,7 +37,7 @@ public class Politicas {
 			}
 		}
 		
-		System.out.println("Error en politicas");
+//		System.out.println("Error en politicas");
 		return transiciones.lastIndexOf(1);
 	}
 	

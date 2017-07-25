@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
 public class RedPetri {
 	private static final Exception IllegalStateException = null;
@@ -44,8 +43,6 @@ public class RedPetri {
 	
 	public int disparar(int transicion){
 		
-		String t = Thread.currentThread().getName(); 
-		
 		setTransicionEnVector(transicion);
 		boolean sensib = estaSensibilizada(transicion);
 		
@@ -57,21 +54,10 @@ public class RedPetri {
 					//estoy antes del alfa, tengo que dormir y salir del monitor
 					
 					tiempo.setEsperando(transicion);
-//					System.out.println(t + " Antes del alfa, durmiendo " + tiempo.getTimeSleep(transicion) + " ms [" + entradaMonitor.availablePermits() + "]");
-//					entradaMonitor.release();
-//					System.out.println(t + " {" + entradaMonitor.availablePermits() + "}");
-//					try {
-//						Thread.sleep(tiempo.getTimeSleep(transicion));
-//					} catch (InterruptedException e) {
-//						System.out.print("Error hilo esperando alfa");
-//						e.printStackTrace();
-//					}
 					break;
 				
 				case -2:
 					//estoy despues del beta
-//					System.out.println(Thread.currentThread().getName() + " Estoy despues del beta");
-//					tiempo.setEsperando(transicion);
 					break;
 					
 				case 1:

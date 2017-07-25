@@ -38,11 +38,9 @@ public class MyEntradaMonitor {
 		
 		if(hilosEsperando == 0){
 			semaforo.release();
-//			System.out.println(Thread.currentThread().getName() + " release sin otros hilos en cola");
 		}
 		else{
 			int hiloParaDespertar = cual();
-//			System.out.println(Thread.currentThread().getName() + " voy a dejar entrar al hilo en transicion " + hiloParaDespertar);
 			
 			if(hiloParaDespertar == -1){
 				return;
@@ -69,6 +67,7 @@ public class MyEntradaMonitor {
 	private int cual(){
 		
 		List<Integer> transiciones = getVectorHilos();
+//		return transiciones.lastIndexOf(1);
 		
 		int cant = 0;
 		for (int i = 0; i < transiciones.size(); i++) {
@@ -90,8 +89,6 @@ public class MyEntradaMonitor {
 				return vectorOpciones.lastIndexOf(1);
 			}
 		}
-		
-//		System.out.println("Error en politicas de entrada");
 		
 		return transiciones.lastIndexOf(1);
 	}
