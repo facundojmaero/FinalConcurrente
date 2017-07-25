@@ -7,6 +7,7 @@ public class GestorPiezas {
 	private int[] prioridades;
 	private Politicas politica;
 	private MyEntradaMonitor entradaMonitor;
+	int indiceMenorProporcion;
 
 	public GestorPiezas(int numeroPiezas){
 		
@@ -25,9 +26,11 @@ public class GestorPiezas {
 //		proporcionesProduccion[1] = 1;
 //		proporcionesProduccion[2] = 1;
 		
-		proporcionesProduccion[0] = 2;
-		proporcionesProduccion[1] = 3;
-		proporcionesProduccion[2] = 1;
+//		proporcionesProduccion[0] = 2;
+//		proporcionesProduccion[1] = 3;
+//		proporcionesProduccion[2] = 1;
+		
+		indiceMenorProporcion = getMenorIndiceProporcion(proporcionesProduccion);
 	}
 	
 	public synchronized void contarPieza(int tipoPieza){
@@ -38,7 +41,7 @@ public class GestorPiezas {
 		double promedio = calcularPromedio(produccionNormalizada);
 		produccionNormalizada = dividirPorPromedio(produccionNormalizada, promedio);
 		
-		printArray(produccionNormalizada, piezasTerminadas);
+		printArray(produccionNormalizada, piezasTerminadas, indiceMenorProporcion);
 		
 		prioridades = ordenarPrioridades(produccionNormalizada);
 		
@@ -54,6 +57,19 @@ public class GestorPiezas {
 		
 	}
 	
+	private int getMenorIndiceProporcion(int[] proporcionesProduccion2) {
+		
+		int indice = 0;
+		
+		for (int i = 0; i < proporcionesProduccion2.length; i++) {
+			if(proporcionesProduccion2[i] < proporcionesProduccion2[indice]){
+				indice = i;
+			}
+		}
+		
+		return indice;
+	}
+
 	private int[] ordenarPrioridades(ArrayList<Double> array){
 		int[] prioridades = new int[array.size()];
 		
@@ -68,16 +84,24 @@ public class GestorPiezas {
 		return prioridades;
 	}
 	
-	private void printArray(ArrayList<Double> array, int[] array2){
+	private void printArray(ArrayList<Double> array, int[] array2, int indexMenorProporcion){
+		
 		for (int i = 0; i < array.size(); i++) {
 			System.out.printf("%.2f  ", array.get(i));
 		}
 		
-		System.out.print(" 	");
+		System.out.print("	");
 		
 		for (int i = 0; i < array2.length; i++) {
 			System.out.printf("%d  ", array2[i]);
 		}
+		
+		System.out.print("		");
+		
+		for (int i = 0; i < array2.length; i++) {
+			System.out.printf("%.2f  ", (double)array2[i] / array2[indexMenorProporcion]);
+		}
+		
 		System.out.println();
 	}
 	
