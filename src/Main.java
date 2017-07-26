@@ -12,7 +12,7 @@ public class Main {
 		String fileMarcado = "data/marcado_tp.txt";
 		String fileInvariantes = "data/invariantes_tp.txt";
 		String fileTransiciones = "data/transicionesHilos_tp.txt";
-		String fileTiempos = "data/tiemposs_tp.txt";
+		String fileTiempos = "data/tiempos_tp.txt";
 		String fileTipoPieza = "data/hiloPieza_tp.txt";
 		String fileTransicionesPolitica = "data/transicionesPorPieza_tp.txt";
 
@@ -69,53 +69,10 @@ public class Main {
 			threadArray[i].setTipoPieza(hiloPieza[1][i]);
 			
 			Thread thread = new Thread(threadArray[i]);
-
-//			if(i==2) continue;
+			
 			thread.start();
 		}
-		
-		
-//		threadArray[0].setTipoPieza(0);
-//		threadArray[1].setTipoPieza(1);
-//		threadArray[2].setTipoPieza(1);		
-//		threadArray[3].setTipoPieza(2);
-//		threadArray[4].setTipoPieza(-1);
-		
-		
-//		List<Integer> transiciones_hilo_1 = new MyLinkedList<Integer>();
-//		List<Integer> transiciones_hilo_2 = new MyLinkedList<Integer>();
-//		List<Integer> transiciones_hilo_3 = new MyLinkedList<Integer>();
-//		List<Integer> transiciones_hilo_4 = new MyLinkedList<Integer>();
-//		List<Integer> transiciones_hilo_5 = new MyLinkedList<Integer>();
 
-//		Collections.addAll(transiciones_hilo_1, 0, 1);
-//		Collections.addAll(transiciones_hilo_2, 3, 2);
-
-//		 Collections.addAll(transiciones_hilo_1, 1,2,3,4);
-//		 Collections.addAll(transiciones_hilo_2, 5,6,7,8,13);
-//		 Collections.addAll(transiciones_hilo_3, 9,10,11,12,13);
-//		 Collections.addAll(transiciones_hilo_4, 19,18,17,16,15,14);
-//		 Collections.addAll(transiciones_hilo_5, 0);
-
-		
-
-//		Hilo hilo1 = new Hilo(monitor);
-//		Hilo hilo2 = new Hilo(monitor);
-//		Hilo hilo3 = new Hilo(transiciones_hilo_3,monitor);
-//		Hilo hilo4 = new Hilo(transiciones_hilo_4,monitor);
-//		Hilo hilo5 = new Hilo(transiciones_hilo_5,monitor);
-		
-//		Thread thread1 = new Thread(threadArray[0]);
-//		Thread thread2 = new Thread(threadArray[1]);
-//		Thread thread3 = new Thread(threadArray[2]);
-//		Thread thread4 = new Thread(threadArray[3]);
-//		Thread thread5 = new Thread(threadArray[4]);
-//
-//		thread1.start();
-//		thread2.start();
-//		thread3.start();
-//		thread4.start();
-//		thread5.start();
 	}
 
 	private static int[] generarEcuacionesInvariantes(int[][] invariantes, int[] marcado) {

@@ -17,7 +17,7 @@ public class GestorPiezas {
 	public GestorPiezas(int numeroPiezas){
 		
 		piezasTerminadas = new int[numeroPiezas];
-//		piezasTerminadas[1] = 100;
+//		piezasTerminadas[0] = 100;
 		piezasIniciales = piezasTerminadas.clone();
 		
 		//por defecto se produce el mismo numero de piezas de cada tipo
@@ -29,13 +29,13 @@ public class GestorPiezas {
 			proporcionesProduccion[i] = 1;
 			prioridades[i] = i;
 		} 
-		proporcionesProduccion[0] = 2;
-		proporcionesProduccion[1] = 1;
-		proporcionesProduccion[2] = 1;
+//		proporcionesProduccion[0] = 2;
+//		proporcionesProduccion[1] = 1;
+//		proporcionesProduccion[2] = 1;
 		
-		proporcionesProduccion[0] = 2;
-		proporcionesProduccion[1] = 3;
-		proporcionesProduccion[2] = 1;
+//		proporcionesProduccion[0] = 2;
+//		proporcionesProduccion[1] = 3;
+//		proporcionesProduccion[2] = 1;
 		
 		indiceMenorProporcion = getMenorIndiceProporcion(proporcionesProduccion);
 		
@@ -82,11 +82,15 @@ public class GestorPiezas {
 		
 		if(fin == proporcionesProduccion.length){
 			System.out.println("Test exitoso");
+			writer.println("Test exitoso");
 			System.out.println("Piezas iniciales: ");
+			writer.println("Piezas iniciales: ");
 			for (int i = 0; i < piezasIniciales.length; i++) {
 				System.out.println("Pieza " + i + " " + piezasIniciales[i]);
+				writer.println("Pieza " + i + " " + piezasIniciales[i]);
 			}
 			System.out.println("\nPiezas al finalizar: ");
+			writer.println("\nPiezas al finalizar: ");
 			verProduccion();
 		}
 		
@@ -146,12 +150,14 @@ public class GestorPiezas {
 		
 		for (int i = 0; i < piezasTerminadas.length; i++) {
 			System.out.println("Pieza " + i + ": " + piezasTerminadas[i]);
+			writer.println("Pieza " + i + ": " + piezasTerminadas[i]);
 		}
 		
 		System.out.printf("Politica: ");
 		
 		for (int i = 0; i < proporcionesProduccion.length; i++) {
 			System.out.printf("%d ", proporcionesProduccion[i]);
+			writer.printf("%d ", proporcionesProduccion[i]);
 		} 
 		
 		writer.close();
