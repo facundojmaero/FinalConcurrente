@@ -5,8 +5,8 @@ public class Tiempo {
 
 	List<Long> transicionesConTiempo;
 	int esperando[];
-	long alfa[];// = {250,0,0,0};
-	long beta[];// = {1000000000,1000000000,1000000000,1000000000};
+	long alfa[];
+	long beta[];
 	int[] tiempos;
 
 	public Tiempo(List<Integer> sensibilizadas_iniciales, int[] tiempos) {

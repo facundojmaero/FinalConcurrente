@@ -25,7 +25,7 @@ public class GestorMonitor {
 		
 		entrada_monitor = new MyEntradaMonitor(nroPiezas, countTransitions(I));
 		
-		red = new RedPetri(countTransitions(I), I, M, entrada_monitor, invariantes, resultadoInvariantes, tiempos);
+		red = new RedPetri(countTransitions(I), I, M, invariantes, resultadoInvariantes, tiempos);
 		colas = new Semaphore[countTransitions(I)];
 		for (int i = 0; i < countTransitions(I); i++) {
 			colas[i] = new Semaphore(0);

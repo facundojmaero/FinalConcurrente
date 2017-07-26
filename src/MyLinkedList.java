@@ -1,5 +1,6 @@
 import java.util.LinkedList;
 
+@SuppressWarnings("serial")
 public class MyLinkedList <E> extends LinkedList<E>{
 	int indiceActual;
 	

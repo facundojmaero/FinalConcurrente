@@ -13,18 +13,18 @@ public class RedPetri {
 	int[] resultadoInvariantes;
 	
 	private Tiempo tiempo;
-//	Semaphore entradaMonitor;
-	MyEntradaMonitor entradaMonitor;
 	
-	public RedPetri(int transiciones, int I[][], int M[], MyEntradaMonitor entrada_monitor, int[][] invariantes, int[] resultadoInvariantes, int[] tiempos){
+	public RedPetri(int transiciones, int I[][], int M[], int[][] invariantes, int[] resultadoInvariantes, int[] tiempos){
 		this.transiciones = transiciones;
 		this.invariantes = invariantes;
 		this.resultadoInvariantes = resultadoInvariantes;
 		S = new int[transiciones];
 		this.I = I;
 		M0 = M;
-		tiempo = new Tiempo(this.get_sensibilizadas(), tiempos);
-		this.entradaMonitor = entrada_monitor;
+		
+		if(tiempos != null) { tiempo = new Tiempo(this.get_sensibilizadas(), tiempos); }
+		else				{ tiempo = new Tiempo(this.get_sensibilizadas(), new int[transiciones]); }
+		
 	}
 	
 	private void setTransicionEnVector(int transicion){

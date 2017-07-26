@@ -13,11 +13,13 @@ public class GestorPiezas {
 	
 	private PrintWriter writer;
 	private int[] piezasIniciales;
+	
+	private boolean test = false;
 
 	public GestorPiezas(int numeroPiezas){
 		
 		piezasTerminadas = new int[numeroPiezas];
-//		piezasTerminadas[0] = 100;
+//		piezasTerminadas[1] = 100;
 		piezasIniciales = piezasTerminadas.clone();
 		
 		//por defecto se produce el mismo numero de piezas de cada tipo
@@ -62,7 +64,8 @@ public class GestorPiezas {
 			entradaMonitor.setPrioridades(prioridades);
 		}
 		
-		testPolitica(proporcionesProduccion, piezasTerminadas, indiceMenorProporcion);
+		if(test)
+			testPolitica(proporcionesProduccion, piezasTerminadas, indiceMenorProporcion);
 		
 	}
 	
