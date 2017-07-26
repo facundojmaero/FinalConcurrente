@@ -48,11 +48,6 @@ public class GestorPiezas {
 		if(politica != null){
 			politica.setPrioridades(prioridades);
 			entradaMonitor.setPrioridades(prioridades);
-//			System.out.print("Nuevas prioridades: ");
-//			for (int i = 0; i < piezasTerminadas.length; i++) {
-//				System.out.print(prioridades[i] + " ");
-//			}
-//			System.out.println();
 		}
 		
 	}
@@ -100,6 +95,12 @@ public class GestorPiezas {
 		
 		for (int i = 0; i < array2.length; i++) {
 			System.out.printf("%.2f  ", (double)array2[i] / array2[indexMenorProporcion]);
+		}
+		
+		System.out.print("	");
+		
+		for (int i = 0; i < prioridades.length; i++) {
+			System.out.printf("%d  ", prioridades[i]);
 		}
 		
 		System.out.println();

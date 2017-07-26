@@ -60,9 +60,6 @@ public class GestorMonitor {
 								
 				sensibilizadas = red.get_sensibilizadas();
 				
-				// Actualizo quienes estan en la cola
-//				actualizarQuienesEnCola();
-				
 				List<Integer> listasParaDisparar = andVectores(sensibilizadas, quienesEnCola);
 				// Aca hay que hacer el and de sensibilizidas y listas para disparar
 				

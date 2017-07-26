@@ -5,9 +5,11 @@ import java.util.concurrent.Semaphore;
 public class MyEntradaMonitor {
 
 	private int[] prioridades;
-	private List<ArrayList<Integer>> matrizTransiciones;
+	private List<ArrayList<Integer>> transicionesPorPieza;
 	private MySemaphore[] colasDeEntrada;
 	private Semaphore semaforo;
+	
+	private int[][] matrizOrdenPrioridades;
 
 	public MyEntradaMonitor(int nroPiezas, int nroTransiciones){
 		
@@ -46,6 +48,7 @@ public class MyEntradaMonitor {
 				return;
 			}
 			colasDeEntrada[hiloParaDespertar].release();
+			System.out.println(Thread.currentThread().getName() + " dejando entrar al hilo en transicion " + hiloParaDespertar);
 		}
 		
 	}
@@ -63,45 +66,124 @@ public class MyEntradaMonitor {
 		
 		return count;
 	}
-	
-	private int cual(){
+
+	public int cual(){
 		
 		List<Integer> transiciones = getVectorHilos();
-//		return transiciones.lastIndexOf(1);
+		
+		if(matrizOrdenPrioridades == null){
+			initMatrizPrioridades(transiciones.size());
+		}
+		
+		int transicion = contarTransicionesSensibilizadas(transiciones);
+		if(transicion != -1) { return transicion; }
+		
+		int[] transicionesSensibilizadas = ponerIndices(transiciones);
+		
+		int[] transicionesSensibilizadas2 = multiplicarMatrices(matrizOrdenPrioridades, transicionesSensibilizadas);
+		
+		return getReturnIndex(transicionesSensibilizadas2);
+	}
+	
+	private int getReturnIndex(int[] transiciones){
+		
+		int index = 0;
+		
+		for (int i = 0; i < transiciones.length; i++) {
+			
+			if(transiciones[i] == -1) 	{ continue; }
+			else 						{ index = transiciones[i]; break;}
+		}
+		
+		if (index == -3){
+			int a = 0;
+			a++;
+		}
+		
+		return index;
+	}
+	
+	private void initMatrizPrioridades(int size) {
+		
+		matrizOrdenPrioridades = new int[size][size];
+		
+		ordenarMatrizPrioridades(prioridades);
+		
+	}
+	
+	private int llenarMatrizConFor(int inicio, ArrayList<Integer> vector){
+		
+		int j = inicio;
+		
+		for (int i = 0; i < vector.size(); i++) {
+			
+			matrizOrdenPrioridades[j][vector.get(i)] = 1;
+			j++;
+		}
+		
+		return j;
+	}
+	
+	private void ordenarMatrizPrioridades(int[] prioridades){
+		
+		for(int i = 0; i < matrizOrdenPrioridades.length; i++){
+			for(int j = 0; j < matrizOrdenPrioridades[0].length; j++){
+				matrizOrdenPrioridades[i][j] = 0;
+			}
+		}
+		
+		int inicio = 0;
+		
+		for (int i = 0; i < transicionesPorPieza.size(); i++) {
+			inicio = llenarMatrizConFor(inicio, transicionesPorPieza.get(prioridades[i]));
+		}
+		
+//		for(int i = 0; i < matrizOrdenPrioridades.length; i++){
+//			for(int j = 0; j < matrizOrdenPrioridades[0].length; j++){
+//				System.out.print(matrizOrdenPrioridades[i][j] + "\t");
+//			}
+//			System.out.println(" ");
+//		}
+		
+	}
+
+	private int[] ponerIndices(List<Integer> transiciones) {
+
+		int[] transicionesConIndices = new int[transiciones.size()];
+		
+		for (int i = 0; i < transicionesConIndices.length; i++) {
+			
+			if(transiciones.get(i) == 1) 	{ transicionesConIndices[i] = i; }
+			else 							{ transicionesConIndices[i] = -1; }
+		}
+		
+		return transicionesConIndices;
+	}
+
+	private int[] multiplicarMatrices (int[][] firstarray,int[] secondarray){
+		int [] result = new int[firstarray.length];
+		
+		for (int i = 0; i < result.length; i++) {
+			for (int j = 0; j < firstarray[0].length; j++) {
+				result[i] += firstarray[i][j] * secondarray[j];
+			}
+		}
+		return result;
+	}
+	
+	private int contarTransicionesSensibilizadas(List<Integer> transiciones){
 		
 		int cant = 0;
 		for (int i = 0; i < transiciones.size(); i++) {
-			if(transiciones.get(i) == 1){
+			if(transiciones.get(i) == 1)
 				cant++;
-			}
 		}
 		
-		if(cant==1){
-			return transiciones.lastIndexOf(1);
-		}
-		
-		List<Integer> vectorOpciones = new ArrayList<Integer>();
-		
-		for (int i = 0; i < prioridades.length; i++) {
-			vectorOpciones = andVectores(transiciones, matrizTransiciones.get(prioridades[i]));
-			
-			if(vectorOpciones.indexOf(1) != -1){
-				return vectorOpciones.lastIndexOf(1);
-			}
-		}
-		
-		return transiciones.lastIndexOf(1);
+		if(cant == 1) 	{ return transiciones.indexOf(1); }
+		else			{ return -1; }
+
 	}
 	
-	private List<Integer> andVectores(List<Integer> vector1, List<Integer> vector2) {
-		List<Integer> result = new ArrayList<Integer>(vector1.size());
-
-		for (int i = 0; i < vector1.size(); i++) {
-			result.add(vector1.get(i) & vector2.get(i));
-		}
-
-		return result;
-	}
 	
 	private List<Integer> getVectorHilos(){
 		
@@ -117,10 +199,14 @@ public class MyEntradaMonitor {
 		return vector;
 	}
 	
-	public List<ArrayList<Integer>> getMatrizTransiciones() { return matrizTransiciones; }
-	public void setMatrizTransiciones(ArrayList<ArrayList<Integer>> matrizPrioridades) { this.matrizTransiciones = matrizPrioridades; }
+	public List<ArrayList<Integer>> getMatrizTransiciones() { return transicionesPorPieza; }
+	public void setMatrizTransiciones(ArrayList<ArrayList<Integer>> matrizPrioridades) { this.transicionesPorPieza = matrizPrioridades; }
 	
-	public void setPrioridades(int[] newPrioridades) { prioridades = newPrioridades; }
+	public void setPrioridades(int[] newPrioridades) { 
+		prioridades = newPrioridades; 
+		ordenarMatrizPrioridades(newPrioridades);
+	}
+	
 	public int[] getPrioridades() {return prioridades; }
 	
 }
