@@ -30,9 +30,9 @@ public class GestorPiezas {
 //		proporcionesProduccion[1] = 1;
 //		proporcionesProduccion[2] = 1;
 		
-//		proporcionesProduccion[0] = 2;
-//		proporcionesProduccion[1] = 3;
-//		proporcionesProduccion[2] = 1;
+		proporcionesProduccion[0] = 2;
+		proporcionesProduccion[1] = 3;
+		proporcionesProduccion[2] = 1;
 		
 		indiceMenorProporcion = getMenorIndiceProporcion(proporcionesProduccion);
 		
@@ -57,7 +57,6 @@ public class GestorPiezas {
 		
 		if(politica != null){
 			politica.setPrioridades(prioridades);
-			entradaMonitor.setPrioridades(prioridades);
 		}
 		
 	}
@@ -110,7 +109,7 @@ public class GestorPiezas {
 		System.out.print("	");
 		
 		for (int i = 0; i < array2.length; i++) {
-			System.out.printf("%.2f  ", (double)array2[i] / array2[indexMenorProporcion]);
+			System.out.printf("%d  ", prioridades[i]);
 			writer.printf("%.2f  ", (double)array2[i] / array2[indexMenorProporcion]);
 		}
 		

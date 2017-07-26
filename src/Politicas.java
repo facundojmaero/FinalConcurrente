@@ -120,16 +120,6 @@ public class Politicas {
 
 	}
 	
-	private List<Integer> andVectores(List<Integer> vector1, List<Integer> vector2) {
-		List<Integer> result = new ArrayList<Integer>(vector1.size());
-
-		for (int i = 0; i < vector1.size(); i++) {
-			result.add(vector1.get(i) & vector2.get(i));
-		}
-
-		return result;
-	}
-	
 	public List<ArrayList<Integer>> getMatrizTransiciones() { return transicionesPorPieza; }
 	public void setMatrizTransiciones(ArrayList<ArrayList<Integer>> matrizPrioridades) { this.transicionesPorPieza = matrizPrioridades; }
 	
