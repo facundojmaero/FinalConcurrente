@@ -133,7 +133,11 @@ public class Politicas {
 	public List<ArrayList<Integer>> getMatrizTransiciones() { return transicionesPorPieza; }
 	public void setMatrizTransiciones(ArrayList<ArrayList<Integer>> matrizPrioridades) { this.transicionesPorPieza = matrizPrioridades; }
 	
-	public void setPrioridades(int[] newPrioridades) { prioridades = newPrioridades; }
+	public void setPrioridades(int[] newPrioridades) { 
+		prioridades = newPrioridades; 
+		ordenarMatrizPrioridades(newPrioridades);
+	}
+	
 	public int[] getPrioridades() {return prioridades; }
 	
 }

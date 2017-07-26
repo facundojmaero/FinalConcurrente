@@ -1,3 +1,5 @@
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class GestorPiezas {
@@ -8,6 +10,8 @@ public class GestorPiezas {
 	private Politicas politica;
 	private MyEntradaMonitor entradaMonitor;
 	int indiceMenorProporcion;
+	
+	PrintWriter writer;
 
 	public GestorPiezas(int numeroPiezas){
 		
@@ -31,6 +35,12 @@ public class GestorPiezas {
 //		proporcionesProduccion[2] = 1;
 		
 		indiceMenorProporcion = getMenorIndiceProporcion(proporcionesProduccion);
+		
+		try{
+		    writer = new PrintWriter("log.txt", "UTF-8");
+		} catch (IOException e) {
+		   // do something
+		}
 	}
 	
 	public synchronized void contarPieza(int tipoPieza){
@@ -57,7 +67,7 @@ public class GestorPiezas {
 		int indice = 0;
 		
 		for (int i = 0; i < proporcionesProduccion2.length; i++) {
-			if(proporcionesProduccion2[i] < proporcionesProduccion2[indice]){
+			if(proporcionesProduccion2[i] <= proporcionesProduccion2[indice]){
 				indice = i;
 			}
 		}
@@ -99,11 +109,13 @@ public class GestorPiezas {
 		
 		System.out.print("	");
 		
-		for (int i = 0; i < prioridades.length; i++) {
-			System.out.printf("%d  ", prioridades[i]);
+		for (int i = 0; i < array2.length; i++) {
+			System.out.printf("%.2f  ", (double)array2[i] / array2[indexMenorProporcion]);
+			writer.printf("%.2f  ", (double)array2[i] / array2[indexMenorProporcion]);
 		}
 		
 		System.out.println();
+		writer.println();
 	}
 	
 	public void verProduccion(){
@@ -118,6 +130,7 @@ public class GestorPiezas {
 			System.out.printf("%d ", proporcionesProduccion[i]);
 		} 
 		
+		writer.close();
 		System.exit(0);
 	}
 	

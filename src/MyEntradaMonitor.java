@@ -48,7 +48,7 @@ public class MyEntradaMonitor {
 				return;
 			}
 			colasDeEntrada[hiloParaDespertar].release();
-			System.out.println(Thread.currentThread().getName() + " dejando entrar al hilo en transicion " + hiloParaDespertar);
+//			System.out.println(Thread.currentThread().getName() + " dejando entrar al hilo en transicion " + hiloParaDespertar);
 		}
 		
 	}
