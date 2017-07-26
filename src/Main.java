@@ -12,7 +12,7 @@ public class Main {
 		String fileMarcado = "data/marcado_tp.txt";
 		String fileInvariantes = "data/invariantes_tp.txt";
 		String fileTransiciones = "data/transicionesHilos_tp.txt";
-		String fileTiempos = "data/tiemposss_tp.txt";
+		String fileTiempos = "data/tiemposs_tp.txt";
 		String fileTipoPieza = "data/hiloPieza_tp.txt";
 		String fileTransicionesPolitica = "data/transicionesPorPieza_tp.txt";
 

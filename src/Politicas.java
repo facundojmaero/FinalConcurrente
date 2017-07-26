@@ -61,17 +61,23 @@ public class Politicas {
 			
 			matrizOrdenPrioridades[j][vector.get(i)] = 1;
 			j++;
-		}
+		}	
 		
 		return j;
 	}
 	
 	private void ordenarMatrizPrioridades(int[] prioridades){
 		
+		for(int i = 0; i < matrizOrdenPrioridades.length; i++){
+			for(int j = 0; j < matrizOrdenPrioridades[0].length; j++){
+				matrizOrdenPrioridades[i][j] = 0;
+			}
+		}
+		
 		int inicio = 0;
 		
 		for (int i = 0; i < transicionesPorPieza.size(); i++) {
-			inicio = llenarMatrizConFor(inicio, transicionesPorPieza.get(i));
+			inicio = llenarMatrizConFor(inicio, transicionesPorPieza.get(prioridades[i]));
 		}
 		
 //		for(int i = 0; i < matrizOrdenPrioridades.length; i++){
