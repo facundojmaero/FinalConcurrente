@@ -11,11 +11,14 @@ public class GestorPiezas {
 	private MyEntradaMonitor entradaMonitor;
 	int indiceMenorProporcion;
 	
-	PrintWriter writer;
+	private PrintWriter writer;
+	private int[] piezasIniciales;
 
 	public GestorPiezas(int numeroPiezas){
 		
 		piezasTerminadas = new int[numeroPiezas];
+//		piezasTerminadas[1] = 100;
+		piezasIniciales = piezasTerminadas.clone();
 		
 		//por defecto se produce el mismo numero de piezas de cada tipo
 		//primeramente las prioridades son 0 1 2
@@ -30,18 +33,15 @@ public class GestorPiezas {
 		proporcionesProduccion[1] = 1;
 		proporcionesProduccion[2] = 1;
 		
-//		proporcionesProduccion[0] = 2;
-//		proporcionesProduccion[1] = 3;
-//		proporcionesProduccion[2] = 1;
+		proporcionesProduccion[0] = 2;
+		proporcionesProduccion[1] = 3;
+		proporcionesProduccion[2] = 1;
 		
 		indiceMenorProporcion = getMenorIndiceProporcion(proporcionesProduccion);
 		
 		try{
 		    writer = new PrintWriter("log.txt", "UTF-8");
-		} catch (IOException e) {
-		   // do something
-		}
-		
+		} catch (IOException e) {}
 		
 	}
 	
@@ -60,15 +60,38 @@ public class GestorPiezas {
 		if(politica != null){
 			politica.setPrioridades(prioridades);
 			entradaMonitor.setPrioridades(prioridades);
-//			System.out.print("Nuevas prioridades: ");
-//			for (int i = 0; i < piezasTerminadas.length; i++) {
-//				System.out.print(prioridades[i] + " ");
-//			}
-//			System.out.println();
 		}
+		
+		testPolitica(proporcionesProduccion, piezasTerminadas, indiceMenorProporcion);
 		
 	}
 	
+	private void testPolitica(int[] proporcionesProduccion, int[] piezasTerminadas, int indiceDivision) {
+		
+		int fin = 0;
+		
+		for (int i = 0; i < proporcionesProduccion.length; i++) {
+			
+			if( piezasTerminadas[indiceDivision] == 0)
+				continue;
+			
+			if((double)piezasTerminadas[i] / piezasTerminadas[indiceDivision] == proporcionesProduccion[i]){
+				fin++;
+			}
+		}
+		
+		if(fin == proporcionesProduccion.length){
+			System.out.println("Test exitoso");
+			System.out.println("Piezas iniciales: ");
+			for (int i = 0; i < piezasIniciales.length; i++) {
+				System.out.println("Pieza " + i + " " + piezasIniciales[i]);
+			}
+			System.out.println("\nPiezas al finalizar: ");
+			verProduccion();
+		}
+		
+	}
+
 	private int getMenorIndiceProporcion(int[] proporcionesProduccion2) {
 		
 		int indice = 0;

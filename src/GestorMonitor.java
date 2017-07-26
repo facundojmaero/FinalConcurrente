@@ -17,6 +17,8 @@ public class GestorMonitor {
 	private Politicas politicas = null;
 	
 	private List<String> log = new ArrayList<String>();
+	
+	private boolean debug = false;
 
 	public GestorMonitor(int I[][], int[] M, int[][] invariantes, int[] resultadoInvariantes, int[] tiempos, int nroPiezas) {
 
@@ -39,11 +41,16 @@ public class GestorMonitor {
 		String t = Thread.currentThread().getName();
 		
 		entrada_monitor.acquire(transicion);
-//		System.out.println(t + " obtuve la entrada al monitor");
+		
+		if(debug)
+			System.out.println(t + " obtuve la entrada al monitor");
+		
 		k = 1;
 		while (k == 1) {
 			k = red.disparar(transicion);
-//			System.out.println(Thread.currentThread().getName() + " Intentando disparar transicion " + transicion + " k = " + k);
+			
+			if(debug)
+				System.out.println(Thread.currentThread().getName() + " Intentando disparar transicion " + transicion + " k = " + k);
 			
 			if (k == 1) {
 			
@@ -56,12 +63,10 @@ public class GestorMonitor {
 				 }
 				
 				// Dispare una transicion correctamente
-//				System.out.println("         " + t + " Dispare transicion " + transicion + ", k = " + k);
+				 if(debug)
+				 	System.out.println("         " + t + " Dispare transicion " + transicion + ", k = " + k);
 								
 				sensibilizadas = red.get_sensibilizadas();
-				
-				// Actualizo quienes estan en la cola
-//				actualizarQuienesEnCola();
 				
 				List<Integer> listasParaDisparar = andVectores(sensibilizadas, quienesEnCola);
 				// Aca hay que hacer el and de sensibilizidas y listas para disparar
@@ -72,13 +77,15 @@ public class GestorMonitor {
 					
 					// Despierto a un hilo que esta esperando por esa transicion
 					colas[indiceDespertar].release();
-					
-//					System.out.println(t + " desperte al hilo en transicion " + indiceDespertar);
+				
+					if(debug)
+						System.out.println(t + " desperte al hilo en transicion " + indiceDespertar);
 
 				} else {
 					
 					// Salgo del while
-//					System.out.println(t + " salgo del monitor sin despertar a nadie");
+					if(debug)
+						System.out.println(t + " salgo del monitor sin despertar a nadie");
 					entrada_monitor.release();
 					
 				}
@@ -87,7 +94,8 @@ public class GestorMonitor {
 				
 			} else if (k == -3) {
 				
-//				System.out.println(t + " transicion " + transicion + " no sensibilizada, me voy a la cola");
+				if(debug)
+					System.out.println(t + " transicion " + transicion + " no sensibilizada, me voy a la cola");
 				
 				quienesEnCola.set(transicion, 1);
 				// No dispare por no estar sensibilizada
@@ -102,7 +110,8 @@ public class GestorMonitor {
 
 			} else if (k == -1){
 				
-//				System.out.println(t + " Antes del alfa, durmiendo " + red.getTimeSleep(transicion) + " ms");
+				if(debug)
+					System.out.println(t + " Antes del alfa, durmiendo " + red.getTimeSleep(transicion) + " ms");
 				entrada_monitor.release();
 				
 				try {
@@ -115,7 +124,8 @@ public class GestorMonitor {
 				// No dispare por no estar en ventana de tiempo (antes del alfa)
 				// Igual que el caso anterior pero no espero en la cola sino que me voy
 //				k = 1;
-//				System.out.println(t + " saliendo del monitor despues de dormir con k = " + k);
+				if(debug)
+					System.out.println(t + " saliendo del monitor despues de dormir con k = " + k);
 				return 1;
 
 			} else if(k== -2){
