@@ -8,7 +8,7 @@ public class GestorPiezas {
 	private int[] proporcionesProduccion;
 	private int[] prioridades;
 	private Politicas politica;
-	int indiceMenorProporcion;
+	int indiceReferencia;
 	
 	private PrintWriter writer;
 	private int[] piezasIniciales;
@@ -18,7 +18,7 @@ public class GestorPiezas {
 	public GestorPiezas(int numeroPiezas){
 		
 		piezasTerminadas = new int[numeroPiezas];
-//		piezasTerminadas[2] = 100;
+		piezasTerminadas[1] = 100;
 		piezasIniciales = piezasTerminadas.clone();
 		
 		//por defecto se produce el mismo numero de piezas de cada tipo
@@ -38,7 +38,7 @@ public class GestorPiezas {
 //		proporcionesProduccion[1] = 3;
 //		proporcionesProduccion[2] = 1;
 		
-		indiceMenorProporcion = getMenorIndiceProporcion(proporcionesProduccion);
+		indiceReferencia = getMenorIndiceProporcion(proporcionesProduccion);
 		
 		try{
 		    writer = new PrintWriter("log.txt", "UTF-8");
@@ -50,23 +50,30 @@ public class GestorPiezas {
 		
 		piezasTerminadas[tipoPieza]++;
 		
-		ArrayList<Double> produccionNormalizada = normalizarProduccion();
-		double promedio = calcularPromedio(produccionNormalizada);
-		produccionNormalizada = dividirPorPromedio(produccionNormalizada, promedio);
+		ArrayList<Double> produccionNormalizada = calcularIndices();
 		
-		printArray(produccionNormalizada, piezasTerminadas, indiceMenorProporcion);
+		printArray(produccionNormalizada, piezasTerminadas, indiceReferencia);
 		
 		prioridades = ordenarPrioridades(produccionNormalizada);
 		
-		if(politica != null){
+		if(politica != null){ 
 			politica.setPrioridades(prioridades);
 		}
 		
 		if(test)
-			testPolitica(proporcionesProduccion, piezasTerminadas, indiceMenorProporcion);
+			testPolitica(proporcionesProduccion, piezasTerminadas, indiceReferencia);
 		
 	}
 	
+	private ArrayList<Double> calcularIndices() {
+		
+		ArrayList<Double> produccionNormalizada = normalizarProduccion();
+		double promedio = calcularPromedio(produccionNormalizada);
+		produccionNormalizada = dividirPorPromedio(produccionNormalizada, promedio);
+		
+		return produccionNormalizada;
+	}
+
 	private void testPolitica(int[] proporcionesProduccion, int[] piezasTerminadas, int indiceDivision) {
 		
 		int fin = 0;
@@ -124,7 +131,7 @@ public class GestorPiezas {
 		return prioridades;
 	}
 	
-	private void printArray(ArrayList<Double> array, int[] array2, int indexMenorProporcion){
+	private void printArray(ArrayList<Double> array, int[] array2, int indiceReferencia){
 		
 		for (int i = 0; i < array.size(); i++) {
 			System.out.printf("%.2f  ", array.get(i));
@@ -139,8 +146,8 @@ public class GestorPiezas {
 		System.out.print("		");
 		
 		for (int i = 0; i < array2.length; i++) {
-			System.out.printf("%.2f  ", (double)array2[i] / array2[indexMenorProporcion]);
-			writer.printf("%.2f  ", (double)array2[i] / array2[indexMenorProporcion]);
+			System.out.printf("%.2f  ", (double)array2[i] / array2[indiceReferencia]);
+			writer.printf("%.2f  ", (double)array2[i] / array2[indiceReferencia]);
 		}
 		
 		System.out.println();

@@ -16,12 +16,15 @@ public class Main {
 		String fileTipoPieza = "data/hiloPieza_tp.txt";
 		String fileTransicionesPolitica = "data/transicionesPorPieza_tp.txt";
 
-		int[][] I = readMatrix(fileMatrizI);
+		
+		//Leo los archivos
+		int[][] I = convertIntegersMatriz(readMatrix(fileMatrizI));
 		int[] M = readVector(fileMarcado);
-		int[][] invariantes = readMatrix(fileInvariantes);
+		int[][] invariantes = convertIntegersMatriz(readMatrix(fileInvariantes));
 		int[] resultadoInvariantes = generarEcuacionesInvariantes(invariantes, M);
-		int[][] transicionesHilos = readMatrix(fileTransiciones);
-		int[][] hiloPieza = readMatrix(fileTipoPieza);
+		int[][] transicionesHilos = convertIntegersMatriz(readMatrix(fileTransiciones));
+		int[][] hiloPieza = convertIntegersMatriz(readMatrix(fileTipoPieza));
+		ArrayList<ArrayList<Integer>> matrizPrioridades = readMatrix(fileTransicionesPolitica);
 		
 		int[] tiempos;
 		try {
@@ -31,42 +34,29 @@ public class Main {
 		}
 		
 		int nroHilos = transicionesHilos.length;
+		int piezasDistintas = hiloPieza[0][0];
 		
+		//Creacion de objetos necesarios
 		Hilo[] threadArray = new Hilo[nroHilos];
 		GestorMonitor monitor = new GestorMonitor(I, M, invariantes, resultadoInvariantes, tiempos, hiloPieza[0][0]);
-		GestorPiezas gestorPiezas = new GestorPiezas(hiloPieza[0][0]);
-		
-		Politicas politicas = new Politicas(hiloPieza[0][0]);
-		
-		ArrayList<ArrayList<Integer>> matrizPrioridades = new ArrayList<ArrayList<Integer>>();
-		Scanner input = null;
-		try {
-			input = new Scanner(new File(fileTransicionesPolitica));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		while (input.hasNextLine()) {
-			ArrayList<Integer> line = readLine(input.nextLine());
-			matrizPrioridades.add(line);
-		}
-		input.close();
+		GestorPiezas gestorPiezas = new GestorPiezas(piezasDistintas);
+		Politicas politicas = new Politicas(piezasDistintas);
 		
 		politicas.setMatrizTransiciones(matrizPrioridades);
 		
 		monitor.setPoliticas(politicas);
 		gestorPiezas.setPolitica(politicas);
 		
+		//Creacion e inicializacion de hilos
 		for (int i = 0; i < nroHilos; i++) {
 			MyLinkedList<Integer> listaTransiciones = new MyLinkedList<Integer>();
 			for (int j = 0; j < transicionesHilos[i].length; j++) {
 				listaTransiciones.add(transicionesHilos[i][j]);
 			}
 			threadArray[i] = new Hilo(listaTransiciones, monitor, gestorPiezas);
-			
 			threadArray[i].setTipoPieza(hiloPieza[1][i]);
 			
 			Thread thread = new Thread(threadArray[i]);
-			
 			thread.start();
 		}
 
@@ -100,7 +90,7 @@ public class Main {
 		return line;
 	}
 
-	private static int[][] readMatrix(String file) {
+	private static ArrayList<ArrayList<Integer>> readMatrix(String file) {
 
 		ArrayList<ArrayList<Integer>> matriz = new ArrayList<ArrayList<Integer>>();
 		Scanner input = null;
@@ -114,17 +104,21 @@ public class Main {
 			matriz.add(line);
 		}
 		input.close();
-
-		// Convierto de arrayList a array
-
+		
+		return matriz;
+	}
+	
+	private static int[][] convertIntegersMatriz(ArrayList<ArrayList<Integer>> matriz){
+		
 		int[][] I = new int[matriz.size()][matriz.get(0).size()];
 		for (int i = 0; i < matriz.size(); i++) {
-			I[i] = convertIntegers(matriz.get(i));
+			I[i] = convertIntegersVector(matriz.get(i));
 		}
 		return I;
+		
 	}
 
-	private static int[] convertIntegers(List<Integer> integers) {
+	private static int[] convertIntegersVector(List<Integer> integers) {
 		int[] ret = new int[integers.size()];
 		for (int i = 0; i < ret.length; i++) {
 			ret[i] = integers.get(i).intValue();
@@ -138,7 +132,7 @@ public class Main {
 		try {
 			input = new Scanner(new File(file));
 		} catch (FileNotFoundException e) {
-			System.out.println("Archivo con tiempos no encontrado " + e + "\n");
+			System.out.println("Archivo no encontrado " + e + "\n");
 		}
 
 		ArrayList<Integer> line = readLine(input.nextLine());
@@ -147,7 +141,7 @@ public class Main {
 		// Convierto de arrayList a array
 
 		int[] M = new int[line.size()];
-		M = convertIntegers(line);
+		M = convertIntegersVector(line);
 		return M;
 	}
 }

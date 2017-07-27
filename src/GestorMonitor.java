@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GestorMonitor {
-
-//	final Semaphore entrada_monitor = new Semaphore(1, true);
 	
 	public MyEntradaMonitor entrada_monitor;
 	
@@ -16,13 +14,10 @@ public class GestorMonitor {
 	private List<Integer> quienesEnCola = new ArrayList<Integer>();
 	private Politicas politicas = null;
 	
-	private List<String> log = new ArrayList<String>();
-	
 	private boolean debug = false;
 
 	public GestorMonitor(int I[][], int[] M, int[][] invariantes, int[] resultadoInvariantes, int[] tiempos, int nroPiezas) {
 
-		
 		entrada_monitor = new MyEntradaMonitor(nroPiezas, countTransitions(I));
 		
 		red = new RedPetri(countTransitions(I), I, M, invariantes, resultadoInvariantes, tiempos);
@@ -40,7 +35,6 @@ public class GestorMonitor {
 	public int dispararTransicion(int transicion){
 		
 		String t = Thread.currentThread().getName();
-		
 		entrada_monitor.acquire(transicion);
 		
 		if(debug)
@@ -55,13 +49,8 @@ public class GestorMonitor {
 			
 			if (k == 1) {
 			
-				// Si no se cumple los invariantes
-				 try {
-				 red.revisarInvariantes();
-				 } catch (Exception e) {
-				 e.printStackTrace();
-				 System.exit(1);
-				 }
+				try { red.revisarInvariantes(); } 
+				catch (Exception e) { System.exit(1); }
 				
 				// Dispare una transicion correctamente
 				 if(debug)
@@ -87,9 +76,8 @@ public class GestorMonitor {
 					// Salgo del while
 					if(debug)
 						System.out.println(t + " salgo del monitor sin despertar a nadie");
-//					entrada_monitor.release();
+
 					entrada_monitor.tryRelease(transicion);
-					
 				}
 				
 				return 0;
@@ -102,59 +90,42 @@ public class GestorMonitor {
 				quienesEnCola.set(transicion, 1);
 				// No dispare por no estar sensibilizada
 				entrada_monitor.release();
-				try {
-					colas[transicion].acquire();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				
+				try { colas[transicion].acquire(); } 
+				catch (InterruptedException e) {}
+				
 				quienesEnCola.set(transicion, 0);
 
 			} else if (k == -1){
 				
 				if(debug)
 					System.out.println(t + " Antes del alfa, durmiendo " + red.getTimeSleep(transicion) + " ms");
-//				entrada_monitor.release();
+				
 				entrada_monitor.tryRelease(transicion);
 				
-				try {
-					Thread.sleep(red.getTimeSleep(transicion));
-				} catch (InterruptedException e) {
-					System.out.print("Error hilo esperando alfa");
-					e.printStackTrace();
-				}
+				try { Thread.sleep(red.getTimeSleep(transicion)); } 
+				catch (InterruptedException e) { System.out.print("Error hilo esperando alfa " + e); }
+				
 				
 				// No dispare por no estar en ventana de tiempo (antes del alfa)
 				// Igual que el caso anterior pero no espero en la cola sino que me voy
-//				k = 1;
 				if(debug)
 					System.out.println(t + " saliendo del monitor despues de dormir con k = " + k);
 				return 1;
 
 			} else if(k== -2){
 				//estoy despues del beta, me voy a la cola a esperar
-//				System.out.println(t + " transicion " + transicion + " despues del beta, me voy a la cola");
-//				System.out.println(t + " salgo del monitor y me pongo a esperar en una cola [" + entrada_monitor.availablePermits() + "]");
-//				k = 1;
 				entrada_monitor.release();
-//				System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
-				try {
-					colas[transicion].acquire();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+
+				try { colas[transicion].acquire(); } 
+				catch (InterruptedException e) {}
 			}
 			else{
-//				System.out.println("K TIENE UN VALOR NO VALIDO---------------------- = " + k + " " + t);
 				System.exit(-1);
 			}
 		}
 		
-//		System.out.println(t + " salgo del monitor [" + entrada_monitor.availablePermits() + "]");
 		entrada_monitor.release();
-//		System.out.println(t + " {" + entrada_monitor.availablePermits() + "}");
-//		System.out.println("USANDO ULTIMO RETURN " + t);
 		return 1;
 	}
 
@@ -175,19 +146,6 @@ public class GestorMonitor {
 
 	private int countTransitions(int marcado[][]) {
 		return marcado[0].length;
-	}
-	
-	public int writeToLog(String message){
-		log.add(message);
-//		System.out.println(message);
-		if(checkLog() == true)
-			return 0;
-		else
-			return -1;
-	}
-	
-	private boolean checkLog(){
-		return true;
 	}
 	
 	public void setPoliticas(Politicas newPoliticas) { 

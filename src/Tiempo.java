@@ -43,13 +43,9 @@ public class Tiempo {
 	}
 
 	public boolean alguienEsperando(int transicion) {
-		// Si hay alguien esperando
-		
-		if (esperando[transicion] != 0) {
-			return true;
-		} else {
-			return false;
-		}
+
+		if (esperando[transicion] != 0) { return true; 	} 
+		else		 					{ return false; }
 	}
 
 	public void resetEsperando(int transicion) { esperando[transicion] = 0; }
@@ -65,4 +61,5 @@ public class Tiempo {
 			}
 		}
 	}
+	
 }

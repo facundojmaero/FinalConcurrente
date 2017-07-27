@@ -37,8 +37,8 @@ public class RedPetri {
 	
 	private boolean estaSensibilizada(int transicion){
 		List<Integer> sensibilizadas = get_sensibilizadas();
-		if(sensibilizadas.get(transicion) == 1){return true;}
-		else {return false;}
+		if(sensibilizadas.get(transicion) == 1)	{return true;}
+		else 									{return false;}
 	}
 	
 	public int disparar(int transicion){
@@ -85,10 +85,10 @@ public class RedPetri {
 		
 		List<Integer> sensibilizadas = new ArrayList<Integer>(transiciones);
 		
-		for (int i = 0; i < transiciones; i++) {
-			sensibilizadas.add(0);
-		}
+		for (int i = 0; i < transiciones; i++) { sensibilizadas.add(0); }
+		
 		int[] tr = new int[transiciones], resultado;
+		
 		for (int index = 0; index < transiciones; index++)
 		{
 		    //compruebo una a una si las transiciones estan sensibilizadas
@@ -119,7 +119,7 @@ public class RedPetri {
 	//se usa para saber que transiciones estan sensibilizadas
 	private int[] cycleTransicion(int index, int[] vector){
 		
-		//leno de 0 el vector
+		//lleno de 0 el vector
 		for (int i = 0; i < vector.length; i++) {
 			vector[i]=0;
 		}
@@ -130,6 +130,7 @@ public class RedPetri {
 	}
 	
 	private int[] multiplicarMatrices (int[][] firstarray,int[] secondarray){
+		
 		int [] result = new int[firstarray.length];
 		
 		for (int i = 0; i < result.length; i++) {
@@ -141,15 +142,12 @@ public class RedPetri {
 	}
 	
 	private int[] sumarVectores (int[] firstarray, int[] secondarray){
+		
 		int [] resultado = new int[secondarray.length];
 		for (int i = 0; i < secondarray.length; i++) {
 			resultado[i] = firstarray[i] + secondarray[i];
 		}
 		return resultado;
-	}
-
-	public int[] getMarcado(){
-		return M0;
 	}
 	
 	public boolean revisarInvariantes() throws Exception{
@@ -189,18 +187,20 @@ public class RedPetri {
 	
 	//Devuelve un vector con las transiciones nuevas que se sensibilizaron
 	private List<Integer> calcularNewSensibilizadas(List<Integer> oldSensibilizadas,List<Integer> actualSensibilizadas){
+		
 		List<Integer> newSensibilizadas = new ArrayList<Integer>();
+		
 		for(int i=0;i<oldSensibilizadas.size();i++){
 			int sensibilizada = 0;
 			sensibilizada = actualSensibilizadas.get(i) - oldSensibilizadas.get(i);
 			newSensibilizadas.add(sensibilizada);
 		}
+		
 		return newSensibilizadas;
 	}
 
-	public long getTimeSleep(int transicion){
-		return tiempo.getTimeSleep(transicion);
-	}
+	public int[] getMarcado(){ return M0; }
+	public long getTimeSleep(int transicion) { return tiempo.getTimeSleep(transicion); }
 }
 
 

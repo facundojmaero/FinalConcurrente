@@ -30,10 +30,7 @@ public class Hilo implements Runnable {
 					// la transicion se disparo, avanzo a la siguiente
 					
 					j++;
-//					int transicionActualAux = transicionActual;
 					siguienteTransicion();
-					
-//					gestorMonitor.writeToLog(transicionActualAux + " " + transicionActual + " " + Thread.currentThread().getName());
 				}
 			}
 			
