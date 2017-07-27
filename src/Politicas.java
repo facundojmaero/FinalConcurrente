@@ -27,28 +27,26 @@ public class Politicas {
 			return transiciones.indexOf(1);
 		}
 		
-		List<Integer> vectorOpciones = new ArrayList<Integer>();
-		
 		for (int i = 0; i < prioridades.length; i++) {
-			vectorOpciones = andVectores(transiciones, matrizTransiciones.get(prioridades[i]));
 			
-			if(vectorOpciones.contains(1)){
-				return vectorOpciones.indexOf(1);
+			int transicionElegida = buscarTransicion(transiciones, matrizTransiciones.get(prioridades[i]));	
+			if(transicionElegida != -1) {return transicionElegida;}
+			
+		}
+		
+		return transiciones.indexOf(1);
+	}
+
+	
+	private int buscarTransicion(List<Integer> opciones, ArrayList<Integer> prioridades) {
+		
+		for (int i = 0; i < prioridades.size(); i++) {
+			if( opciones.get(prioridades.get(i)) == 1){
+				return prioridades.get(i);
 			}
 		}
 		
-//		System.out.println("Error en politicas");
-		return transiciones.lastIndexOf(1);
-	}
-	
-	private List<Integer> andVectores(List<Integer> vector1, List<Integer> vector2) {
-		List<Integer> result = new ArrayList<Integer>(vector1.size());
-
-		for (int i = 0; i < vector1.size(); i++) {
-			result.add(vector1.get(i) & vector2.get(i));
-		}
-
-		return result;
+		return -1;
 	}
 	
 	public List<ArrayList<Integer>> getMatrizTransiciones() { return matrizTransiciones; }

@@ -8,18 +8,17 @@ public class GestorPiezas {
 	private int[] proporcionesProduccion;
 	private int[] prioridades;
 	private Politicas politica;
-	private MyEntradaMonitor entradaMonitor;
 	int indiceMenorProporcion;
 	
 	private PrintWriter writer;
 	private int[] piezasIniciales;
 	
-	private boolean test = false;
+	private boolean test = true;
 
 	public GestorPiezas(int numeroPiezas){
 		
 		piezasTerminadas = new int[numeroPiezas];
-//		piezasTerminadas[1] = 100;
+//		piezasTerminadas[2] = 100;
 		piezasIniciales = piezasTerminadas.clone();
 		
 		//por defecto se produce el mismo numero de piezas de cada tipo
@@ -61,7 +60,6 @@ public class GestorPiezas {
 		
 		if(politica != null){
 			politica.setPrioridades(prioridades);
-			entradaMonitor.setPrioridades(prioridades);
 		}
 		
 		if(test)
@@ -172,8 +170,6 @@ public class GestorPiezas {
 	
 	public Politicas getPolitica() { return politica; }
 	public void setPolitica(Politicas politica) { this.politica = politica; }
-	
-	public void setEntradaMonitor(MyEntradaMonitor newEntradaMonitor) { entradaMonitor = newEntradaMonitor; }
 	
 	private ArrayList<Double> normalizarProduccion(){
 		

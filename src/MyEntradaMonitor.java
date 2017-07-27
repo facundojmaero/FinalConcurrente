@@ -4,19 +4,13 @@ import java.util.concurrent.Semaphore;
 
 public class MyEntradaMonitor {
 
-	private int[] prioridades;
-	private List<ArrayList<Integer>> matrizTransiciones;
 	private MySemaphore[] colasDeEntrada;
 	private Semaphore semaforo;
+	private Politicas politica;
 
 	public MyEntradaMonitor(int nroPiezas, int nroTransiciones){
 		
-		prioridades = new int[nroPiezas];
 		semaforo = new Semaphore(1,true);
-		
-		for (int i = 0; i < nroPiezas; i++) {
-			prioridades[i] = i;
-		}
 		
 		colasDeEntrada = new MySemaphore[nroTransiciones];
 		for (int i = 0; i < colasDeEntrada.length; i++) {
@@ -40,14 +34,44 @@ public class MyEntradaMonitor {
 			semaforo.release();
 		}
 		else{
-			int hiloParaDespertar = cual();
+			
+			List<Integer> transiciones = getVectorHilos();
+			int hiloParaDespertar = cual(transiciones);
 			
 			if(hiloParaDespertar == -1){
+				semaforo.release();
 				return;
 			}
 			colasDeEntrada[hiloParaDespertar].release();
 		}
 		
+	}
+	
+	public void tryRelease(int t){
+		
+		int hilosEsperando = getQueueLength();
+		
+		if(hilosEsperando == 0){
+			semaforo.release();
+		}
+		else{
+			
+			List<Integer> transiciones = getVectorHilos();
+			transiciones.set(t, 1);
+			
+			int hiloParaDespertar = cual(transiciones);
+			
+			if(hiloParaDespertar == -1){
+				semaforo.release();
+				return;
+			}
+			
+			if(hiloParaDespertar == t){
+				semaforo.release();
+				return;
+			}
+			colasDeEntrada[hiloParaDespertar].release();
+		}
 	}
 	
 	
@@ -64,43 +88,11 @@ public class MyEntradaMonitor {
 		return count;
 	}
 	
-	private int cual(){
+	private int cual(List<Integer> transiciones){
 		
-		List<Integer> transiciones = getVectorHilos();
-//		return transiciones.lastIndexOf(1);
+		int cual = politica.cual(transiciones);
 		
-		int cant = 0;
-		for (int i = 0; i < transiciones.size(); i++) {
-			if(transiciones.get(i) == 1){
-				cant++;
-			}
-		}
-		
-		if(cant==1){
-			return transiciones.lastIndexOf(1);
-		}
-		
-		List<Integer> vectorOpciones = new ArrayList<Integer>();
-		
-		for (int i = 0; i < prioridades.length; i++) {
-			vectorOpciones = andVectores(transiciones, matrizTransiciones.get(prioridades[i]));
-			
-			if(vectorOpciones.indexOf(1) != -1){
-				return vectorOpciones.lastIndexOf(1);
-			}
-		}
-		
-		return transiciones.lastIndexOf(1);
-	}
-	
-	private List<Integer> andVectores(List<Integer> vector1, List<Integer> vector2) {
-		List<Integer> result = new ArrayList<Integer>(vector1.size());
-
-		for (int i = 0; i < vector1.size(); i++) {
-			result.add(vector1.get(i) & vector2.get(i));
-		}
-
-		return result;
+		return cual;
 	}
 	
 	private List<Integer> getVectorHilos(){
@@ -116,11 +108,12 @@ public class MyEntradaMonitor {
 		
 		return vector;
 	}
+
+	public void setPoliticas(Politicas newPoliticas) {
+		politica = newPoliticas;
+		
+	}
 	
-	public List<ArrayList<Integer>> getMatrizTransiciones() { return matrizTransiciones; }
-	public void setMatrizTransiciones(ArrayList<ArrayList<Integer>> matrizPrioridades) { this.matrizTransiciones = matrizPrioridades; }
 	
-	public void setPrioridades(int[] newPrioridades) { prioridades = newPrioridades; }
-	public int[] getPrioridades() {return prioridades; }
 	
 }

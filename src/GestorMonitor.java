@@ -34,6 +34,7 @@ public class GestorMonitor {
 			quienesEnCola.add(0);
 			sensibilizadas.add(0);
 		}
+		
 	}
 
 	public int dispararTransicion(int transicion){
@@ -86,7 +87,8 @@ public class GestorMonitor {
 					// Salgo del while
 					if(debug)
 						System.out.println(t + " salgo del monitor sin despertar a nadie");
-					entrada_monitor.release();
+//					entrada_monitor.release();
+					entrada_monitor.tryRelease(transicion);
 					
 				}
 				
@@ -112,7 +114,8 @@ public class GestorMonitor {
 				
 				if(debug)
 					System.out.println(t + " Antes del alfa, durmiendo " + red.getTimeSleep(transicion) + " ms");
-				entrada_monitor.release();
+//				entrada_monitor.release();
+				entrada_monitor.tryRelease(transicion);
 				
 				try {
 					Thread.sleep(red.getTimeSleep(transicion));
@@ -187,7 +190,10 @@ public class GestorMonitor {
 		return true;
 	}
 	
-	public void setPoliticas(Politicas newPoliticas) { politicas = newPoliticas; }
+	public void setPoliticas(Politicas newPoliticas) { 
+		politicas = newPoliticas; 
+		entrada_monitor.setPoliticas(newPoliticas);
+	}
 	public Politicas getPoliticas() { return politicas; }
 	
 	public MyEntradaMonitor getSemaforoEntrada(){ return entrada_monitor;}
