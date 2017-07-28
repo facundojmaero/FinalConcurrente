@@ -13,12 +13,13 @@ public class GestorPiezas {
 	private PrintWriter writer;
 	private int[] piezasIniciales;
 	
-	private boolean test = true;
+	private boolean test = false;
 
 	public GestorPiezas(int numeroPiezas){
 		
 		piezasTerminadas = new int[numeroPiezas];
-		piezasTerminadas[1] = 100;
+//		piezasTerminadas[0] = 200;
+//		piezasTerminadas[1] = 100;
 		piezasIniciales = piezasTerminadas.clone();
 		
 		//por defecto se produce el mismo numero de piezas de cada tipo
@@ -30,9 +31,9 @@ public class GestorPiezas {
 			proporcionesProduccion[i] = 1;
 			prioridades[i] = i;
 		} 
-//		proporcionesProduccion[0] = 2;
-//		proporcionesProduccion[1] = 1;
-//		proporcionesProduccion[2] = 1;
+		proporcionesProduccion[0] = 2;
+		proporcionesProduccion[1] = 1;
+		proporcionesProduccion[2] = 1;
 		
 //		proporcionesProduccion[0] = 2;
 //		proporcionesProduccion[1] = 3;
@@ -143,11 +144,17 @@ public class GestorPiezas {
 			System.out.printf("%d  ", array2[i]);
 		}
 		
-		System.out.print("		");
+		System.out.print("	");
 		
 		for (int i = 0; i < array2.length; i++) {
 			System.out.printf("%.2f  ", (double)array2[i] / array2[indiceReferencia]);
 			writer.printf("%.2f  ", (double)array2[i] / array2[indiceReferencia]);
+		}
+		
+		System.out.print("	");
+		
+		for (int i = 0; i < array2.length; i++) {
+			System.out.printf("%d  ", prioridades[i]);
 		}
 		
 		System.out.println();

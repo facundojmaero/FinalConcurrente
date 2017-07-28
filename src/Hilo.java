@@ -7,7 +7,6 @@ public class Hilo implements Runnable {
 	List<Integer> transiciones = new MyLinkedList<Integer>();
 	int tipoPieza = -1;
 	GestorPiezas gestorPiezas;
-	int cantPiezas;
 	
 
 	public Hilo(List<Integer> transiciones, GestorMonitor gestor, GestorPiezas gestorPiezas) {
@@ -15,7 +14,6 @@ public class Hilo implements Runnable {
 		this.transiciones = transiciones;
 		transicionActual = ((MyLinkedList<Integer>) transiciones).getActual();
 		this.gestorPiezas = gestorPiezas;
-		cantPiezas = 0;
 	}
 
 	@Override

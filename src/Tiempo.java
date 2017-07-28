@@ -7,7 +7,6 @@ public class Tiempo {
 	int esperando[];
 	long alfa[];
 	long beta[];
-	int[] tiempos;
 
 	public Tiempo(List<Integer> sensibilizadas_iniciales, int[] tiempos) {
 		
