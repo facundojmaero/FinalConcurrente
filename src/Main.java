@@ -62,6 +62,15 @@ public class Main {
 
 	}
 
+	/**
+	 * Calcula el resultado de los invariantes de la red
+	 * A partir de las ecuaciones de P-Invariantes de la red, y
+	 * su marcado, calcula el resultado de las ecuaciones de invariantes.
+	 *
+	 * @param  	invariantes		Conjunto de transiciones que conforman los P-Invariantes de la red
+	 * @param	marcado			Marcado actual de la red
+	 * @return      			Resultado de cada una de las ecuaciones de invariantes
+	 */
 	private static int[] generarEcuacionesInvariantes(int[][] invariantes, int[] marcado) {
 
 		int[] resultadoPlazas = new int[invariantes.length];
@@ -78,6 +87,14 @@ public class Main {
 		return resultadoPlazas;
 	}
 
+	/**
+	 * Lee un archivo de texto en un vector de Integers
+	 * A partir de la ruta de un documento, lee una fila del mismo
+	 * y guarda los datos en un ArrayList de Integers
+	 *
+	 * @param  cadena	Direccion del archivo a leer en el filesystem
+	 * @return      	Vector de Integer leido
+	 */
 	private static ArrayList<Integer> readLine(String cadena) {
 
 		Scanner colReader = null;
@@ -90,6 +107,15 @@ public class Main {
 		return line;
 	}
 
+	/**
+	 * Lee un archivo de texto en una matriz 2d de Integers
+	 * A partir de la ruta de un documento, lee fila a fila del mismo
+	 * y guarda los datos en un ArrayList en dos dimensiones de Integers
+	 *
+	 * @param  file		Direccion del archivo a leer en el filesystem
+	 * @return      	Matriz de Integer leida
+	 * @see         	readLine(String cadena)
+	 */
 	private static ArrayList<ArrayList<Integer>> readMatrix(String file) {
 
 		ArrayList<ArrayList<Integer>> matriz = new ArrayList<ArrayList<Integer>>();
@@ -108,6 +134,16 @@ public class Main {
 		return matriz;
 	}
 	
+	
+	/**
+	 * Transforma un ArrayList de Integers de dos dimensiones en una matriz de ints 
+	 * Dado un ArrayList de ArrayLists de Integers, lo convierte en una
+	 * matriz de dos dimensiones de enteros (int)
+	 *
+	 * @param  matriz	ArrayList de ArrayList de Integers a convertir
+	 * @return      	Matriz de enteros (int)
+	 * @see         	convertIntegersVector(List<Integer> integers)
+	 */
 	private static int[][] convertIntegersMatriz(ArrayList<ArrayList<Integer>> matriz){
 		
 		int[][] I = new int[matriz.size()][matriz.get(0).size()];
@@ -115,9 +151,15 @@ public class Main {
 			I[i] = convertIntegersVector(matriz.get(i));
 		}
 		return I;
-		
 	}
 
+	
+	/**
+	 * Convierte una lista de Integers en un arreglo de enteros (int) 
+	 *
+	 * @param  integers Lista de Integers a convertir
+	 * @return      	Arreglo unidimensional de enteros (int)
+	 */
 	private static int[] convertIntegersVector(List<Integer> integers) {
 		int[] ret = new int[integers.size()];
 		for (int i = 0; i < ret.length; i++) {
@@ -125,7 +167,16 @@ public class Main {
 		}
 		return ret;
 	}
-
+	
+	
+	/**
+	 * Lee un vector de números de un archivo de texto plano.
+	 * Dada una ruta en el sistema de archivos, lee la primer linea del documento
+	 * y guarda los resultados en un arreglo de enteros.
+	 *
+	 * @param  file Dirección del archivo a leer
+	 * @return      Arreglo de enteros con el contenido del archivo
+	 */
 	private static int[] readVector(String file) {
 
 		Scanner input = null;

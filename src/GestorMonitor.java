@@ -18,7 +18,7 @@ public class GestorMonitor {
 
 	public GestorMonitor(int I[][], int[] M, int[][] invariantes, int[] resultadoInvariantes, int[] tiempos, int nroPiezas) {
 
-		entrada_monitor = new MyEntradaMonitor(nroPiezas, countTransitions(I));
+		entrada_monitor = new MyEntradaMonitor(countTransitions(I));
 		
 		red = new RedPetri(countTransitions(I), I, M, invariantes, resultadoInvariantes, tiempos);
 		colas = new Semaphore[countTransitions(I)];
@@ -32,6 +32,17 @@ public class GestorMonitor {
 		
 	}
 
+	/**
+	 * Intenta disparar una transicion en la red de petri
+	 * Dada una transicion a disparar, intenta obtener el mutex,
+	 * intenta el disparo, y prosigue segun su resultado.
+	 * Si se pudo disparar, puede despertar a otro hilo dormido, o salir.
+	 * Si no se pudo, se va a la cola a dormir.
+	 * Si se encuentra antes del alfa minimo de sensibilizacion, duerme el tiempo que haga falta.
+	 *
+	 * @param  	transicion Transicion a disparar
+	 * @return	Resultado del disparo, exitoso (1) o no (0) 
+	 */
 	public int dispararTransicion(int transicion){
 		
 		String t = Thread.currentThread().getName();
@@ -105,7 +116,6 @@ public class GestorMonitor {
 				
 				try { Thread.sleep(red.getTimeSleep(transicion)); } 
 				catch (InterruptedException e) { System.out.print("Error hilo esperando alfa " + e); }
-				
 				
 				// No dispare por no estar en ventana de tiempo (antes del alfa)
 				// Igual que el caso anterior pero no espero en la cola sino que me voy

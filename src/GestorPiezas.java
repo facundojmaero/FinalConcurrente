@@ -19,7 +19,6 @@ public class GestorPiezas {
 		
 		piezasTerminadas = new int[numeroPiezas];
 //		piezasTerminadas[0] = 200;
-//		piezasTerminadas[1] = 100;
 		piezasIniciales = piezasTerminadas.clone();
 		
 		//por defecto se produce el mismo numero de piezas de cada tipo
@@ -31,13 +30,13 @@ public class GestorPiezas {
 			proporcionesProduccion[i] = 1;
 			prioridades[i] = i;
 		} 
-		proporcionesProduccion[0] = 2;
-		proporcionesProduccion[1] = 1;
-		proporcionesProduccion[2] = 1;
-		
 //		proporcionesProduccion[0] = 2;
-//		proporcionesProduccion[1] = 3;
+//		proporcionesProduccion[1] = 1;
 //		proporcionesProduccion[2] = 1;
+		
+		proporcionesProduccion[0] = 2;
+		proporcionesProduccion[1] = 3;
+		proporcionesProduccion[2] = 1;
 		
 		indiceReferencia = getMenorIndiceProporcion(proporcionesProduccion);
 		
@@ -47,6 +46,16 @@ public class GestorPiezas {
 		
 	}
 	
+	/**
+	 * Contabiliza la fabricacion de una pieza.
+	 * Cuando un hilo finaliza la produccion de una pieza, se cuenta la misma,
+	 * se recalculan los indices de produccion, muestran resultados por consola, 
+	 * y reordenan las prioridades.
+	 * Se avisa a la politica del nuevo orden de importancia para la produccion.
+	 * Es un metodo synchronized, para evitar corrupcion de los datos.
+	 *
+	 * @param  tipoPieza	Tipo de pieza producida
+	 */
 	public synchronized void contarPieza(int tipoPieza){
 		
 		piezasTerminadas[tipoPieza]++;
@@ -64,8 +73,22 @@ public class GestorPiezas {
 		if(test)
 			testPolitica(proporcionesProduccion, piezasTerminadas, indiceReferencia);
 		
+		int total = 0;
+		for (int i = 0; i < piezasTerminadas.length; i++) {
+			total += piezasTerminadas[i];
+		}
+		
+		if(total == 2000) {
+			verProduccion();
+		}
+		
 	}
 	
+	/**
+	 * Toma la produccion actual de las piezas y calcula que tan lejos o cerca estan de la proporcion deseada
+	 *
+	 *@return Vector de indices que representan la produccion en el momento actual
+	 */
 	private ArrayList<Double> calcularIndices() {
 		
 		ArrayList<Double> produccionNormalizada = normalizarProduccion();
@@ -105,6 +128,7 @@ public class GestorPiezas {
 		
 	}
 
+	
 	private int getMenorIndiceProporcion(int[] proporcionesProduccion2) {
 		
 		int indice = 0;
@@ -118,6 +142,14 @@ public class GestorPiezas {
 		return indice;
 	}
 
+	/**
+	 * Reordena las prioridades de produccion en funcion de los indices calculados.
+	 * Dados los indices que representan la produccion de las piezas, ordena un vector
+	 * dando mas importancia al tipo de pieza que mas se aleje del valor deseado.
+	 *
+	 * @param  array	Vector con indices de produccion calculados
+	 * @return 			Vector con orden de prioridad para producir cada pieza
+	 */
 	private int[] ordenarPrioridades(ArrayList<Double> array){
 		int[] prioridades = new int[array.size()];
 		
@@ -132,6 +164,16 @@ public class GestorPiezas {
 		return prioridades;
 	}
 	
+	/**
+	 * Muestra por consola y en el log el estado actual de la produccion
+	 * Muestra en consola los indices de produccion, las piezas construidas de cada tipo,
+	 * y las proporciones entre ellas.
+	 * Guarda en el log las proporciones de produccion.
+	 *
+	 * @param  array				Arreglo 1 a imprimir
+ 	 * @param  array2				Arreglo 2 a imprimir
+	 * @param  indiceReferencia		Indice de la pieza tomada como referencia
+	 */
 	private void printArray(ArrayList<Double> array, int[] array2, int indiceReferencia){
 		
 		for (int i = 0; i < array.size(); i++) {
@@ -161,6 +203,11 @@ public class GestorPiezas {
 		writer.println();
 	}
 	
+	/**
+	 * 	Muestra la produccion de piezas por consola y en el log, y termina el programa
+	 * 	Imprime en consola la cantidad de piezas producidas de cada tipo, asi como en el log
+	 * 	del programa, y finaliza la ejecucion.
+	 */
 	public void verProduccion(){
 		
 		for (int i = 0; i < piezasTerminadas.length; i++) {

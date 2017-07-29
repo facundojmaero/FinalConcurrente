@@ -16,6 +16,15 @@ public class Hilo implements Runnable {
 		this.gestorPiezas = gestorPiezas;
 	}
 
+	
+	/**
+	 * Dispara las transiciones que se le asignan en la red, por medio del Monitor
+	 * Metodo principal del hilo. Intenta disparar transiciones en un bucle
+	 * por medio del gestor del monitor.
+	 * Si pudo disparar correctamente, avanza a la transicion siguiente en su lista.
+	 * Avisa al gestor de piezas si se finalizo la construccion de una pieza.
+	 * Guarda en el log las proporciones de produccion.
+	 */
 	@Override
 	public void run() {
 		
@@ -38,7 +47,10 @@ public class Hilo implements Runnable {
 //		gestorPiezas.verProduccion();
 	}
 	
-	
+	/**
+	 * Avisa al gestor de piezas que se termino de fabricar una pieza, si corresponde.
+	 *
+	 */
 	private void terminarVuelta(){
 		
 		if(tipoPieza >= 0){
@@ -52,6 +64,11 @@ public class Hilo implements Runnable {
 	public int getTransicionActual() { return transicionActual; }
 	public void setTransicionActual(int newTransicion) { transicionActual = newTransicion; }
 	
+	
+	/**
+	 * Avanza a la siguiente transicion en la lista del hilo.
+	 * 
+	 */
 	public void siguienteTransicion() {
 		((MyLinkedList<Integer>) transiciones).avanzar();
 		setTransicionActual( ((MyLinkedList<Integer>) transiciones).getActual() );

@@ -15,6 +15,13 @@ public class Politicas {
 		} 
 	}
 
+	/**
+	 * Decide entre un grupo de transiciones la que debe ser disparada.
+	 * Permite elegir la transicion a disparar entre un conjunto de opciones.
+	 *
+	 * @param  	transiciones	Vector con transiciones posibles a ser disparadas actualmente.
+ 	 * @return 	Indice de la transicion a disparar
+	 */
 	public int cual(List<Integer> transiciones){
 		
 		int cant = 0;
@@ -37,7 +44,16 @@ public class Politicas {
 		return transiciones.indexOf(1);
 	}
 
-	
+	/**
+	 * Busca entre las alternativas dadas la transicion mas importante a disparar despues
+	 * Recibe opciones de disparo, y las prioridades para considerarlas, y comprueba las mismas.
+	 * Retorna el indice de la transicion que considera debe ser disparada luego, por orden de
+	 * importancia.
+	 *
+	 * @param  	opciones		Vector con las posibles transiciones a disparar
+ 	 * @param  	prioridades	Vector con el orden en el que debe comprobarse el arreglo de opciones
+	 * @return 	Indice de la transicion siguiente a ser disparada
+	 */
 	private int buscarTransicion(List<Integer> opciones, ArrayList<Integer> prioridades) {
 		
 		for (int i = 0; i < prioridades.size(); i++) {

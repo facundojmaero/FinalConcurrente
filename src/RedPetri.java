@@ -41,6 +41,18 @@ public class RedPetri {
 		else 									{return false;}
 	}
 	
+	
+	/**
+	 * Intenta disparar una transicion dada e informa del resultado.
+	 * 
+	 * Si el disparo no se puede hacer (porque la transicion no esta sensibilizada), se revierte el disparo
+	 * y se informa del error.
+	 * Si la transicion puede dispararse, se comprueba la ventana de tiempo.
+	 * Si todo es correcto se dispara. Sino no se hace nada, y se informa del resultado
+	 *
+	 * @param  	transicion	Transicion a disparar
+	 * @return	Resultado del disparo
+	 */
 	public int disparar(int transicion){
 		
 		setTransicionEnVector(transicion);
@@ -80,7 +92,11 @@ public class RedPetri {
 		}
 	}
 	
-	//Devuelve un ArrayList con 1 donde la transicion esta sensibilizada
+	/**
+	 * Calcula las transiciones sensibilizadas en la red
+	 *
+	 * @return	Vector con las transiciones sensibilizadas
+	 */
 	public List<Integer> get_sensibilizadas(){
 		
 		List<Integer> sensibilizadas = new ArrayList<Integer>(transiciones);
@@ -150,6 +166,12 @@ public class RedPetri {
 		return resultado;
 	}
 	
+	/**
+	 * Revisa los invariantes de tokens en la red
+	 *
+	 * @return	Revision exitosa o si hubo un error
+	 * @throws	Exception
+	 */
 	public boolean revisarInvariantes() throws Exception{
 		for (int i = 0; i < invariantes.length; i++) {
 			
@@ -185,7 +207,13 @@ public class RedPetri {
 		
 	}
 	
-	//Devuelve un vector con las transiciones nuevas que se sensibilizaron
+	/**
+	 * Calcula las transiciones sensibilizadas a partir de las anteriores y posteriores a un disparo dado
+	 *
+	 * @param  	oldSensibilizadas	Transiciones sensibilizadas antes del disparo
+	 * @param  	newSensibilizadas	Transiciones sensibilizadas despues del disparo
+	 * @return	Vector con las transiciones que se sensibilizaron luego del disparo
+	 */
 	private List<Integer> calcularNewSensibilizadas(List<Integer> oldSensibilizadas,List<Integer> actualSensibilizadas){
 		
 		List<Integer> newSensibilizadas = new ArrayList<Integer>();

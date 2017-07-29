@@ -6,18 +6,55 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import org.junit.Before;
 import org.junit.Test;
 
 public class SystemTest {
-
-	@Before
-	public void setUp() throws Exception {
+	
+	/**
+	 * Comprueba el correcto funcionamiento del disparo de una transicion.
+	 * Dispara varias transiciones en la red del practico, y comprueba que 
+	 * el valor de retorno concuerda con el esperado, sea un valor exitoso
+	 * (se pudo disparar), o no (no estaba sensibilizada).
+	 *  
+	 * @throws Exception
+	 */
+	@Test
+	public void testDisparo() throws Exception {
+		RedPetri red = crearNuevaRedTP();
+		
+		assertEquals(1,red.disparar(0));
+		assertEquals(-3,red.disparar(0));
+		
+	}
+	
+	/**
+	 * Comprueba el correcto funcionamiento del disparo de una transicion con tiempo.
+	 * Dispara varias transiciones en la red del practico, y comprueba que 
+	 * el valor de retorno concuerda con el esperado, sea un valor exitoso
+	 * (se pudo disparar), o no (no estaba sensibilizada). Se realiza sobre una red con tiempo
+	 *  
+	 * @throws Exception
+	 */
+	@Test
+	public void testDisparoTiempo() throws Exception {
+		RedPetri red = crearNuevaRedTPTiempo();
+		
+		assertEquals(1,red.disparar(0));
+		assertEquals(-3,red.disparar(0));
+		assertEquals(1, red.disparar(5));
+		assertEquals(-1, red.disparar(6));
+		
 	}
 
+	/**
+	 * Testea el marcado de la red del practico.
+	 * Dispara un conjunto de transiciones, revisa los invariantes
+	 * en cada disparo, y comprueba que la red no entre en estados invalidos. 
+	 * @throws Exception
+	 */
 	@Test
 	public void testMarcado() throws Exception {
-		RedPetri red = crearNuevaRed();
+		RedPetri red = crearNuevaRedTP();
 		
 		int[] transiciones = {0,1,2,19,5,0,18,17};
 		
@@ -39,9 +76,15 @@ public class SystemTest {
 		}
 	}
 	
+	/**
+	 * Testea las transiciones sensibilizadas en la red luego de varios disparos.
+	 * Dispara un conjunto de transiciones, revisa el numero de posibles disparos, 
+	 * y que transiciones son.
+	 *
+	 */
 	@Test
-	public void testSensibilizadas1() throws Exception {
-		RedPetri red = crearNuevaRed();
+	public void testSensibilizadas1() {
+		RedPetri red = crearNuevaRedTP();
 		
 		int[] transiciones = {0,1,2,19,5,0,18,17};
 		
@@ -61,9 +104,16 @@ public class SystemTest {
 		assertEquals("Indice de transicion sensibilizada", 16, sensib.indexOf(1));
 	}
 	
+	
+	/**
+	 * Testea las transiciones sensibilizadas en la red luego de varios disparos.
+	 * Dispara un conjunto de transiciones, revisa el numero de posibles disparos, 
+	 * y que transiciones son.
+	 *
+	 */
 	@Test
-	public void testSensibilizadas2() throws Exception {
-		RedPetri red = crearNuevaRed();
+	public void testSensibilizadas2() {
+		RedPetri red = crearNuevaRedTP();
 		
 		int[] transiciones = {1,0,19,18,5,2,17,16,3,4,6,7,0,5,6};
 		
@@ -87,9 +137,41 @@ public class SystemTest {
 		assertArrayEquals(new int[]{0,8,15}, indicesSensibilizadas);
 	}
 	
+	/**
+	 * Comprueba el funcionamiento de la linked list circular usada por los hilos
+	 * Crea una lista circular con 3 elementos, hace avanzar el indice actual y comprueba
+	 * que se cumpla el recorrido circular.
+	 */
+	@Test
+	public void testMyLinkedList() {
+		
+		MyLinkedList<Integer> list = new MyLinkedList<Integer>();
+		
+		list.add(4);
+		list.add(3);
+		list.add(2);
+		
+		assertEquals(4, list.getActual().intValue());
+		list.avanzar();
+		list.avanzar();
+		assertEquals(2, list.getActual().intValue());
+		list.avanzar();
+		assertEquals(4, list.getActual().intValue());
+	}
 	
 	
-	public RedPetri crearNuevaRed(){
+	/**
+	 * Crea una nueva Red de Petri, con el marcado inicial y los invariantes usados en el proyecto.
+	 * Inicializa una nueva red, para ser utilizada en tests de comprobacion de plazas 
+	 * y transiciones.
+	 * 
+	 * @return red La red inicializada
+	 * 
+	 * @see testMarcado
+	 * @see testSensibilizadas1()
+	 * @see testSensibilizadas2()
+	 */
+	public RedPetri crearNuevaRedTP(){
 		String fileMatrizI = "data/red_tp.txt";
 		String fileMarcado = "data/marcado_tp.txt";
 		String fileInvariantes = "data/invariantes_tp.txt";
@@ -101,6 +183,34 @@ public class SystemTest {
 
 		
 		RedPetri red = new RedPetri(I[0].length, I, M, invariantes, resultadoInvariantes, null);
+		return red;
+	}
+	
+	/**
+	 * Crea una nueva Red de Petri con tiempo, con el marcado inicial y los invariantes usados en el proyecto.
+	 * Inicializa una nueva red, para ser utilizada en tests de comprobacion de plazas 
+	 * y transiciones.
+	 * 
+	 * @return red La red con tiempo inicializada
+	 * 
+	 * @see testMarcado
+	 * @see testSensibilizadas1()
+	 * @see testSensibilizadas2()
+	 */
+	public RedPetri crearNuevaRedTPTiempo(){
+		String fileMatrizI = "data/red_tp.txt";
+		String fileMarcado = "data/marcado_tp.txt";
+		String fileInvariantes = "data/invariantes_tp.txt";
+		String fileTiempos = "data/tiempos_tp.txt";
+
+		int[][] I = readMatrix(fileMatrizI);
+		int[] M = readVector(fileMarcado);
+		int[][] invariantes = readMatrix(fileInvariantes);
+		int[] resultadoInvariantes = generarEcuacionesInvariantes(invariantes, M);
+		int[] tiempos = readVector(fileTiempos);
+
+		
+		RedPetri red = new RedPetri(I[0].length, I, M, invariantes, resultadoInvariantes, tiempos);
 		return red;
 	}
 	
