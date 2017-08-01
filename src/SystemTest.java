@@ -11,6 +11,142 @@ import org.junit.Test;
 public class SystemTest {
 	
 	/**
+	 * Comprueba que el hilo duerme correctamente en la cola
+	 *  
+	 * @throws Exception
+	 */
+	@Test
+	public void testHiloDurmiendo() throws Exception {
+		
+		String fileMatrizI = "data/red_tp.txt";
+		String fileMarcado = "data/marcado_tp.txt";
+		String fileInvariantes = "data/invariantes_tp.txt";
+		String fileTiempos = "data/tiempos_tp.txt";
+		String fileTipoPieza = "data/hiloPieza_tp.txt";
+
+		
+		//Leo los archivos
+		int[][] I = readMatrix(fileMatrizI);
+		int[] M = readVector(fileMarcado);
+		int[][] invariantes = readMatrix(fileInvariantes);
+		int[] resultadoInvariantes = generarEcuacionesInvariantes(invariantes, M);
+		int[][] hiloPieza = readMatrix(fileTipoPieza);
+		
+		int[] tiempos;
+		try {
+			tiempos = readVector(fileTiempos);
+		} catch (Exception e) {
+			tiempos = null;
+		}
+		
+		//Creacion de objetos necesarios
+		GestorMonitor monitor = new GestorMonitor(I, M, invariantes, resultadoInvariantes, tiempos, hiloPieza[0][0]);
+		GestorPiezas gestorPiezas = new GestorPiezas(3);
+		Politicas politicas = new Politicas(3);
+		
+		monitor.setPoliticas(politicas);
+		gestorPiezas.setPolitica(politicas);
+		
+		MyLinkedList<Integer> listaTransiciones = new MyLinkedList<Integer>();
+		listaTransiciones.add(5);
+		listaTransiciones.add(6);
+		listaTransiciones.add(7);
+		listaTransiciones.add(8);
+		listaTransiciones.add(13);
+
+		Hilo hilo1 = new Hilo(listaTransiciones, monitor, gestorPiezas);
+		
+		Thread thread = new Thread(hilo1);
+		thread.start();
+		
+		Thread.currentThread().sleep(100);
+		
+		assertTrue(monitor.quienesEnCola.get(5) == 1);
+		
+	}
+	
+	/**
+	 * Comprueba el correcto funcionamiento del disparo de una transicion.
+	 * Dispara varias transiciones en la red del practico, y comprueba que 
+	 * el valor de retorno concuerda con el esperado, sea un valor exitoso
+	 * (se pudo disparar), o no (no estaba sensibilizada).
+	 *  
+	 * @throws Exception
+	 */
+	@Test
+	public void testPoliticas() throws Exception {
+		
+		String fileTransicionesPolitica = "data/transicionesPorPieza_tp.txt";
+		
+		ArrayList<ArrayList<Integer>> matriz = new ArrayList<ArrayList<Integer>>();
+		Scanner input = null;
+		try {
+			input = new Scanner(new File(fileTransicionesPolitica));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		while (input.hasNextLine()) {
+			ArrayList<Integer> line = readLine(input.nextLine());
+			matriz.add(line);
+		}
+		input.close();
+		
+		Politicas politica = new Politicas(3);
+		politica.setMatrizTransiciones(matriz);
+		
+		int[] prioridades = new int[3];
+		List<Integer> transiciones = new ArrayList<Integer>();
+		
+		for (int i = 0; i < 20; i++) {
+			transiciones.add(0);
+		}
+		
+		transiciones.set(1, 1);
+		transiciones.set(0, 1);
+		transiciones.set(19, 1);
+		
+		prioridades[0] = 1;
+		prioridades[1] = 0;
+		prioridades[2] = 2;
+		
+		politica.setPrioridades(prioridades);
+		assertEquals(0,politica.cual(transiciones));
+		
+		for (int i = 0; i < 20; i++) {
+			transiciones.set(i,0);
+		}
+		
+		transiciones.set(1, 1);
+		transiciones.set(0, 1);
+		transiciones.set(19, 1);
+		
+		prioridades[0] = 2;
+		prioridades[1] = 1;
+		prioridades[2] = 0;
+		
+		politica.setPrioridades(prioridades);
+		assertEquals(19,politica.cual(transiciones));
+		
+		for (int i = 0; i < 20; i++) {
+			transiciones.set(i,0);
+		}
+		
+		transiciones.set(1, 1);
+		transiciones.set(0, 1);
+		transiciones.set(19, 1);
+		
+		prioridades[0] = 0;
+		prioridades[1] = 2;
+		prioridades[2] = 1;
+		
+		politica.setPrioridades(prioridades);
+		assertEquals(1,politica.cual(transiciones));
+		
+	}
+	
+	
+	
+	/**
 	 * Comprueba el correcto funcionamiento del disparo de una transicion.
 	 * Dispara varias transiciones en la red del practico, y comprueba que 
 	 * el valor de retorno concuerda con el esperado, sea un valor exitoso
@@ -48,32 +184,45 @@ public class SystemTest {
 
 	/**
 	 * Testea el marcado de la red del practico.
-	 * Dispara un conjunto de transiciones, revisa los invariantes
-	 * en cada disparo, y comprueba que la red no entre en estados invalidos. 
+	 * Dispara un conjunto de transiciones y revisa los invariantes
+	 * en cada disparo. 
 	 * @throws Exception
 	 */
 	@Test
 	public void testMarcado() throws Exception {
 		RedPetri red = crearNuevaRedTP();
 		
-		int[] transiciones = {0,1,2,19,5,0,18,17};
+		int[] transiciones = {0,19,5,0,6,5,7,0,1,18,8,2,17,13,16,3,4,6,5};
 		
 		for (int i = 0; i < transiciones.length; i++) {
 			red.disparar(transiciones[i]);
-		
-			int[] marcado = red.getMarcado();
-			
 			assertTrue("Invariantes", red.revisarInvariantes());
+			
+		}
+	}
+	
+	/**
+	 * Testea el marcado de la red del practico.
+	 * Dispara un conjunto de transiciones y revisa que no se ingrese en estados invalidos. 
+	 * @throws Exception
+	 */
+	@Test
+	public void testEstadosInvalidos() throws Exception {
+		RedPetri red = crearNuevaRedTP();
+		
+		int[] transiciones = {0,19,5,0,6,5,7,0,1,18,8,2,17,13,16,3,4,6,5,7};
+		
+		for (int i = 0; i < transiciones.length; i++) {
+			red.disparar(transiciones[i]);
+		}
+			int[] marcado = red.getMarcado();
+
 			assertTrue("Plazas 2 y 11", marcado[2] + marcado[11] < 2);
 			assertTrue("Plazas 1 y 10", marcado[1] + marcado[10] < 2);
 			assertTrue("Plazas 15 y 25", marcado[15] + marcado[25] < 2);
 			assertTrue("Plazas 10 y 15", marcado[10] + marcado[15] < 2);
-			assertTrue("Plaza 4", marcado[4] > 0);
-			assertTrue("Plaza 17", marcado[17] > 0);
-			assertTrue("Plaza 27", marcado[27] > 0);
-			assertTrue("Plazas 25, 26, 21, 20", marcado[25] + marcado[26] + marcado[21] + marcado[20] == 2);
+			assertTrue("Plazas 2, 10, 14, 23", marcado[2] + marcado[10] + marcado[14] + marcado[23] == 1);
 			
-		}
 	}
 	
 	/**
@@ -154,7 +303,6 @@ public class SystemTest {
 		assertEquals(4, list.getActual().intValue());
 		list.avanzar();
 		list.avanzar();
-		assertEquals(2, list.getActual().intValue());
 		list.avanzar();
 		assertEquals(4, list.getActual().intValue());
 	}

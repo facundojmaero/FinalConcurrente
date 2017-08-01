@@ -11,7 +11,7 @@ public class GestorMonitor {
 	private RedPetri red;
 	private Semaphore colas[];
 	private List<Integer> sensibilizadas = new ArrayList<Integer>();
-	private List<Integer> quienesEnCola = new ArrayList<Integer>();
+	public List<Integer> quienesEnCola = new ArrayList<Integer>();
 	private Politicas politicas = null;
 	
 	private boolean debug = false;
@@ -165,5 +165,7 @@ public class GestorMonitor {
 	public Politicas getPoliticas() { return politicas; }
 	
 	public MyEntradaMonitor getSemaforoEntrada(){ return entrada_monitor;}
+	
+	public Semaphore[] getSemaforos() { return colas; }
 	
 }
